@@ -25,10 +25,15 @@ open class LaserTower(name: String) : Block(name){
     init{
         update = true
         solid = true
-        hasItems = true
+        hasItems = false
         hasPower = true
         consumesPower = true
         configurable = true
+        saveConfig = true
+    }
+    override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
+        super.drawPlace(x, y, rotation, valid)
+        Drawf.dashCircle(x.toFloat(), y.toFloat(), range, Pal.accent)
     }
     inner class LaserTowerBuild : Building() {
         private var reload = 0f

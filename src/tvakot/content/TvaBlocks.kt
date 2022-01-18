@@ -35,9 +35,9 @@ class TvaBlocks : ContentList {
             )
             consumes.power(7f)
             size = 2
-            health = 850
-            reloadTime = 10f
-            damageHit = 15f
+            health = 1850
+            reloadTime = 15f
+            damageHit = 28f
             range = 180f
         }
     }
