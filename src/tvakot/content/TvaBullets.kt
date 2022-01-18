@@ -7,13 +7,11 @@ import mindustry.entities.bullet.BulletType
 
 class TvaBullets : ContentList{
     override fun load() {
-        LaserTowerBulletType = object : BasicBulletType(){
-            init{
-                damage = 15f
-                lifetime = 10f
-                speed = 0f
-                hitEffect = Fx.hitLancer
-            }
+        LaserTowerBulletType = BasicBulletType().apply {
+            damage = 15f
+            lifetime = 10f
+            speed = 0f
+            hitEffect = Fx.hitLancer
         }
     }
     companion object {

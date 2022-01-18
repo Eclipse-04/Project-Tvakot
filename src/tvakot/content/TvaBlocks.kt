@@ -11,9 +11,6 @@ import tvakot.world.blocks.effect.LaserTower
 
 class TvaBlocks : ContentList {
 
-    private lateinit var rtgCell: Block
-    private lateinit var pulseTower: Block
-
     override fun load() {
         //region Power
         rtgCell = object : DecayGenerator("rtg-cell"){}.apply {
@@ -39,6 +36,29 @@ class TvaBlocks : ContentList {
             reloadTime = 15f
             damageHit = 28f
             range = 180f
+            sectorOffset = 3f
         }
+        pulseTowerSmall = object : LaserTower("small-pulse-tower"){}.apply {
+            requirements(
+                Category.effect,
+                with(Items.titanium, 25, Items.silicon, 15, Items.graphite, 95)
+            )
+            consumes.power(7f)
+            health = 650
+            reloadTime = 25f
+            damageHit = 12f
+            range = 110f
+            sectors = 2
+            fulPerSector = 0.7f
+            orbRadius = 0.8f
+            sectorOffset = 1.6f
+            rotDrawSpeed = 10f
+            sectorStroke = 0.7f
+        }
+    }
+    companion object {
+        private lateinit var rtgCell: Block
+        private lateinit var pulseTower: Block
+        private lateinit var pulseTowerSmall: Block
     }
 }

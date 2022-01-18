@@ -22,6 +22,12 @@ open class LaserTower(name: String) : Block(name){
     var lightningColor: Color = Pal.lancerLaser
     var range = 220f
     var damageHit = 10f
+    var rotDrawSpeed = 4f
+    var sectors = 3
+    var fulPerSector = 0.7f
+    var orbRadius = 2f
+    var sectorStroke = 1f
+    var sectorOffset = 1f
     init{
         update = true
         solid = true
@@ -31,21 +37,18 @@ open class LaserTower(name: String) : Block(name){
         configurable = true
         saveConfig = true
     }
-    override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
-        super.drawPlace(x, y, rotation, valid)
-        Drawf.dashCircle(x.toFloat(), y.toFloat(), range, Pal.accent)
-    }
     inner class LaserTowerBuild : Building() {
         private var reload = 0f
         private var warmup = 0f
-        private var orbRadius = 2f
+        private var orbRadiusDraw = 0f
         private var otherTo : Building = this
         override fun updateTile() {
             warmup = if(efficiency() > 0){
-                Mathf.lerp(warmup, 1f, 0.1f)
+                Mathf.lerp(warmup, 1f, 0.05f)
             }else{
                 Mathf.lerp(warmup, 0f, 0.1f)
             }
+            orbRadiusDraw = Mathf.lerp(orbRadiusDraw, efficiency(), 0.05f)
             reload += edelta() * warmup
             if(reload >= reloadTime && otherTo.isValid){
                 val tarRot = angleTo(otherTo)
@@ -90,9 +93,16 @@ open class LaserTower(name: String) : Block(name){
             super.draw()
             Draw.z(Layer.effect)
             Draw.color(lightningColor)
-            Fill.circle(x, y, orbRadius * warmup * efficiency())
-            for (i in 1..4){
-                Lines.swirl(x, y, orbRadius * 1.8f * warmup * efficiency(), 0.15f, i * 90f + Time.time * 4)
+            Draw.alpha(orbRadiusDraw + 0.1f)
+            Fill.circle(x, y, orbRadius * orbRadiusDraw)
+            Lines.stroke(sectorStroke)
+            for (i in 1..sectors){
+                Lines.swirl(
+                    x, y,
+                    orbRadius * orbRadiusDraw + sectorOffset,
+                    fulPerSector / sectors,
+                    i * 360f / sectors + Time.time * rotDrawSpeed
+                )
             }
         }
     }
