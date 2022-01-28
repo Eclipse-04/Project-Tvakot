@@ -9,12 +9,15 @@ import arc.util.Time
 import mindustry.content.Fx
 import mindustry.content.Fx.chainLightning
 import mindustry.entities.Damage
+import mindustry.entities.bullet.BulletType
 import mindustry.gen.Building
 import mindustry.gen.Bullet
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.world.Block
+import mindustry.world.meta.Stat
+import mindustry.world.meta.StatUnit
 import tvakot.content.TvaBullets
 
 open class LaserTower(name: String) : Block(name){
@@ -22,6 +25,7 @@ open class LaserTower(name: String) : Block(name){
     var lightningColor: Color = Pal.lancerLaser
     var range = 220f
     var damageHit = 10f
+    var laserBullet: BulletType = TvaBullets.LaserTowerBulletType
     var rotDrawSpeed = 4f
     var sectors = 3
     var fulPerSector = 0.7f
@@ -37,6 +41,16 @@ open class LaserTower(name: String) : Block(name){
         configurable = true
         saveConfig = true
     }
+    override fun setStats(){
+        super.setStats()
+        stats.add(Stat.damage, damageHit, StatUnit.perShot)
+        stats.add(Stat.reload, 60f / reloadTime, StatUnit.perSecond)
+        stats.add(Stat.range, range / 8, StatUnit.blocks)
+    }
+    override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
+        super.drawPlace(x, y, rotation, valid)
+        Drawf.dashCircle(x.toFloat(), y.toFloat(), range, Pal.accent)
+    }
     inner class LaserTowerBuild : Building() {
         private var reload = 0f
         private var warmup = 0f
@@ -50,13 +64,14 @@ open class LaserTower(name: String) : Block(name){
             }
             orbRadiusDraw = Mathf.lerp(orbRadiusDraw, efficiency(), 0.05f)
             reload += edelta() * warmup
-            if(reload >= reloadTime && otherTo.isValid){
+            val dst = dst(otherTo)
+            if(reload >= reloadTime && otherTo.isValid && dst < range){
                 val tarRot = angleTo(otherTo)
                 val tarDst = dst(otherTo)
                 val hitBullet = object : Bullet(){
                     init{
                         damage = damageHit
-                        type = TvaBullets.LaserTowerBulletType
+                        type = laserBullet
                     }
                 }
                 Damage.collideLine(hitBullet, team, Fx.none, x, y, tarRot, tarDst)
@@ -69,8 +84,8 @@ open class LaserTower(name: String) : Block(name){
             if(otherTo.isValid){
                 Drawf.dashLine(team.color, x, y, otherTo.x, otherTo.y)
                 Drawf.select(otherTo.x, otherTo.y, size.toFloat() * 4, team.color)
-                Drawf.dashCircle(x, y, range, team.color)
             }
+            Drawf.dashCircle(x, y, range, team.color)
         }
         override fun drawConfigure() {
             super.drawConfigure()
