@@ -29,5 +29,6 @@ class TvaTechTree : ContentList {
         node(Blocks.duo, TvaBlocks.laxo, null, Seq.with(Objectives.SectorComplete(stainedMountains)))
         node(Blocks.combustionGenerator, TvaBlocks.pulseTowerSmall, null, Seq.with(Objectives.SectorComplete(stainedMountains)))
         node(TvaBlocks.pulseTowerSmall, TvaBlocks.pulseTower, null, Seq.with(Objectives.SectorComplete(stainedMountains)))
+        node(Blocks.constructor, TvaBlocks.buildingDisassembler, null, Seq.with(Objectives.SectorComplete(ruinousShores)))
     }
 }

@@ -13,6 +13,7 @@ class Tvakot : Mod(){
         TvaStatusEffects().load()
         TvaBullets().load()
         TvaItems().load()
+        TvaLiquids().load()
         TvaBlocks().load()
         TvaTechTree().load()
     }

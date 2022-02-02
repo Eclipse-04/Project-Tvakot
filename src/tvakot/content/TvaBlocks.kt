@@ -1,16 +1,27 @@
 package tvakot.content
 
 import mindustry.content.Bullets
+import mindustry.content.Fx
 import mindustry.content.Items
+import mindustry.content.Liquids
 import mindustry.ctype.ContentList
 import mindustry.type.Category
 import mindustry.type.ItemStack.with
+import mindustry.type.LiquidStack
 import mindustry.world.Block
+import mindustry.world.blocks.payloads.PayloadDeconstructor
 import mindustry.world.blocks.power.DecayGenerator
 import mindustry.world.meta.BuildVisibility
+import tvakot.world.blocks.crafting.HeatCrafter
 import tvakot.world.blocks.defensive.ShatterWall
 import tvakot.world.blocks.defensive.turret.OverdriveTurret
+import tvakot.world.blocks.distribution.HeatPipe
+import tvakot.world.blocks.distribution.HeatRouter
 import tvakot.world.blocks.effect.LaserTower
+import tvakot.world.blocks.power.BurnerHeatGenerator
+import tvakot.world.blocks.power.ThermalHeatGenerator
+import tvakot.world.blocks.power.TurbineGenerator
+import tvakot.world.draw.DrawBoiler
 
 class TvaBlocks : ContentList {
 
@@ -42,6 +53,28 @@ class TvaBlocks : ContentList {
             }
         }
         //endregion
+        //region distribution
+        heatPipe = object : HeatPipe("heat-pipe"){}.apply {
+            requirements(
+                Category.distribution,
+                with(Items.metaglass, 8, Items.titanium, 10, Items.graphite, 8)
+            )
+            health = 80
+            buildCostMultiplier = 0.3f
+            heatCapacity = 500f
+            heatLoss = 0.0005f
+        }
+        heatRouter = object : HeatRouter("heat-router"){}.apply {
+            requirements(
+                Category.distribution,
+                with(Items.metaglass, 16, Items.titanium, 8, Items.graphite, 14)
+            )
+            health = 160
+            buildCostMultiplier = 0.3f
+            heatCapacity = 500f
+            heatLoss = 0.0005f
+        }
+        //endregion
         //region Power
         rtgCell = object : DecayGenerator("rtg-cell"){}.apply {
             requirements(
@@ -52,6 +85,45 @@ class TvaBlocks : ContentList {
             powerProduction = 1.75f
             health = 75
             itemDuration = 1840f
+        }
+        geothermalCollector = object : ThermalHeatGenerator("thermal-heat-gen"){}.apply{
+            requirements(
+                Category.power,
+                with(Items.lead, 65, Items.graphite, 45, Items.silicon, 32, Items.metaglass, 28)
+            )
+            health = 850
+            size = 2
+            heatLoss = 0.005f
+            heatCapacity = 500f
+            heatGenerate = 3f
+            generateEffect = Fx.redgeneratespark
+        }
+        turbine = object : TurbineGenerator("turbine"){}.apply {
+            requirements(
+                Category.power,
+                with(Items.copper, 55, Items.lead, 25, Items.graphite, 35)
+            )
+            size = 2
+            health = 750
+            minLiquidRequired = 12f
+            liquidCapacity = 20f
+            consumes.liquid(TvaLiquids.steam, 0.1f)
+            powerProduction = 7.5f
+        }
+        thermalTurbine = object : TurbineGenerator("thermal-turbine"){}.apply {
+            requirements(
+                Category.power,
+                with(Items.graphite, 95, Items.silicon, 65, Items.metaglass, 55, Items.thorium, 75)
+            )
+            rotorAmount = 2
+            size = 3
+            health = 2750
+            spread = 6f
+            minLiquidRequired = 75f
+            liquidCapacity = 100f
+            consumes.liquid(TvaLiquids.steam, 0.37f)
+            powerProduction = 24f
+            bubbles = 35
         }
         //endregion
         //region Defensive
@@ -69,6 +141,48 @@ class TvaBlocks : ContentList {
             shatterBullet = TvaBullets.ShatterBullet
         }
         //endregion
+        //region crafting
+        boiler = object : HeatCrafter("boiler"){}.apply {
+            requirements(
+                Category.crafting,
+                with(Items.copper, 45, Items.lead, 35, Items.graphite, 25)
+            )
+            size = 2
+            heatLoss = 0.005f
+            health = 240
+            customConsume.heat = 2f
+            craftTime = 6f
+            drawerCustom = DrawBoiler()
+            consumes.liquid(Liquids.water, 0.2f)
+            outputLiquid = LiquidStack(TvaLiquids.steam, 1.4f)
+            heatCapacity = 300f
+            craftEffect = Fx.none
+        }
+        heater = object : BurnerHeatGenerator("heater"){}.apply {
+            requirements(
+                Category.crafting,
+                with(Items.copper, 18, Items.lead, 22)
+            )
+            health = 90
+            heatLoss = 0.005f
+            generateTime = 150f
+            heatGenerate = 4f
+            heatCapacity = 300f
+            squareSprite = false
+        }
+        //endregion
+        //region Payload
+        buildingDisassembler = object : PayloadDeconstructor("building-dis"){}.apply{
+            requirements(
+                Category.units,
+                with(Items.titanium, 55, Items.silicon, 45, Items.graphite, 25)
+            )
+            consumes.power(3.5f)
+            size = 3
+            deconstructSpeed = 4f
+            maxPayloadSize = 2f
+            health = 720
+        }
         //region Effect
         pulseTower = object : LaserTower("pulse-tower"){}.apply {
             requirements(
@@ -109,5 +223,13 @@ class TvaBlocks : ContentList {
         lateinit var pulseTowerSmall: Block
         lateinit var metaglassWall: Block
         lateinit var laxo: Block
+        lateinit var buildingDisassembler: Block
+        lateinit var heater: Block
+        lateinit var boiler: Block
+        lateinit var turbine: Block
+        lateinit var geothermalCollector: Block
+        lateinit var thermalTurbine: Block
+        lateinit var heatPipe: Block
+        lateinit var heatRouter: Block
     }
 }
