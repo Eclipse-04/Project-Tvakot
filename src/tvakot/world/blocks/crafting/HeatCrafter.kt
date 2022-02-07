@@ -3,6 +3,8 @@ package tvakot.world.blocks.crafting
 import arc.Core
 import arc.math.Mathf
 import arc.struct.EnumSet
+import arc.util.io.Reads
+import arc.util.io.Writes
 import mindustry.content.Fx
 import mindustry.entities.Effect
 import mindustry.type.ItemStack
@@ -18,6 +20,7 @@ open class HeatCrafter(name: String) : TvaHeatBlock(name){
     var craftTime = 60f
     var warmupSpeed = 0.02f
     var updateEffect: Effect = Fx.none
+    var updateEffectRange = size * 4f
     var updateEffectChance = 0.04
     var outputItems: Array<ItemStack>? = null
     var outputLiquid: LiquidStack? = null
@@ -28,6 +31,7 @@ open class HeatCrafter(name: String) : TvaHeatBlock(name){
         flags = EnumSet.of(BlockFlag.factory)
         hasItems = true
         outputsLiquid = outputLiquid != null
+        outputHeat = false
     }
     override fun load() {
         super.load()
@@ -36,6 +40,7 @@ open class HeatCrafter(name: String) : TvaHeatBlock(name){
     override fun setStats() {
         stats.timePeriod = craftTime
         super.setStats()
+        if(customConsume.heat != 0f) stats.add(Stat.heatCapacity, Core.bundle.format("stats.tvakot-minHeatRequire", minHeatRequire))
         stats.add(Stat.productionTime, craftTime / 60f, StatUnit.seconds)
         if(outputItems != null){
             stats.add(Stat.output, StatValues.items(craftTime, *outputItems!!))
@@ -43,6 +48,7 @@ open class HeatCrafter(name: String) : TvaHeatBlock(name){
         if (outputLiquid != null) {
             stats.add(Stat.output, outputLiquid!!.liquid, outputLiquid!!.amount * (60f / craftTime), true)
         }
+        stats.add(Stat.output, Core.bundle.format("stats.tvakot-heatPerSec", customConsume.heat * 60))
     }
 
     override fun setBars() {
@@ -55,7 +61,7 @@ open class HeatCrafter(name: String) : TvaHeatBlock(name){
             )
         }
     }
-    inner class HeatCrafterBuild : TvaHeatBlockBuild() {
+    open inner class HeatCrafterBuild : TvaHeatBlockBuild() {
         var progress = 0f
         var totalProgress = 0f
         var warmup = 0f
@@ -70,12 +76,13 @@ open class HeatCrafter(name: String) : TvaHeatBlock(name){
                     }
                 }
             }
-            return (outputLiquid == null || liquids[outputLiquid!!.liquid] < liquidCapacity - 0.001f) && enabled && heatModule.heat > 0.001f
+            return (outputLiquid == null || liquids[outputLiquid!!.liquid] < liquidCapacity - 0.001f) && enabled && consumeHeatValid()
         }
         fun heatSatisfaction(): Float{
+            if(minHeatRequire == 0f) return 1f
             return Mathf.clamp(heatModule.heat / minHeatRequire)
         }
-        fun craft() {
+        open fun craft() {
             consume()
             if (outputItems != null) {
                 for (output in outputItems!!) {
@@ -90,6 +97,10 @@ open class HeatCrafter(name: String) : TvaHeatBlock(name){
             craftEffect.at(x, y)
             progress %= 1f
         }
+
+        override fun efficiency(): Float {
+            return super.efficiency() * heatSatisfaction()
+        }
         override fun updateTile() {
             super.updateTile()
             if (consValid() && consumeHeatValid()) {
@@ -98,7 +109,7 @@ open class HeatCrafter(name: String) : TvaHeatBlock(name){
                 removeHeat(customConsume.heat, delta())
                 warmup = Mathf.approachDelta(warmup, 1f, warmupSpeed)
                 if (Mathf.chanceDelta(updateEffectChance)) {
-                    updateEffect.at(x + Mathf.range(size * 4f), y + Mathf.range(size * 4))
+                    updateEffect.at(x + Mathf.range(updateEffectRange), y + Mathf.range(updateEffectRange))
                 }
             } else {
                 warmup = Mathf.approachDelta(warmup, 0f, warmupSpeed)
@@ -125,6 +136,17 @@ open class HeatCrafter(name: String) : TvaHeatBlock(name){
 
         override fun status(): BlockStatus {
             return if(heatModule.heat < minHeatRequire) BlockStatus.noInput else cons.status()
+        }
+        override fun write(write: Writes) {
+            super.write(write)
+            write.f(progress)
+            write.f(warmup)
+        }
+
+        override fun read(read: Reads, revision: Byte) {
+            super.read(read, revision)
+            progress = read.f()
+            warmup = read.f()
         }
     }
 }

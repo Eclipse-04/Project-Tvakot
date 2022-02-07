@@ -14,8 +14,15 @@ class TvaLiquids : ContentList {
                 effect = StatusEffects.wet
             }
         }
+        methanol = object : Liquid("methanol") {
+            init {
+                color = Color.valueOf("a3ba8dae")
+                flammability = 0.8f
+            }
+        }
     }
     companion object {
         lateinit var steam : Liquid
+        lateinit var methanol : Liquid
     }
 }

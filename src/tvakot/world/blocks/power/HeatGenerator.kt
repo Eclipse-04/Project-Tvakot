@@ -1,5 +1,6 @@
 package tvakot.world.blocks.power
 
+import arc.Core
 import mindustry.type.Item
 import mindustry.world.meta.BlockStatus
 import mindustry.world.meta.Stat
@@ -20,11 +21,12 @@ open class HeatGenerator(name: String) : TvaHeatBlock(name) {
         if(hasItems) {
             stats.add(Stat.productionTime, generateTime / 60f, StatUnit.seconds)
         }
+        stats.add(Stat.basePowerGeneration, Core.bundle.format("stats.tvakot-heatPerSec", heatGenerate * 60f), StatUnit.seconds)
     }
     open inner class HeatGeneratorBuild : TvaHeatBlockBuild() {
         var generateTimeLeft = 0f
         var productionEfficiency = 1f
-        override fun appectHeat(): Boolean {
+        override fun appectHeat(source: TvaHeatBlockBuild?): Boolean {
             return false
         }
         open fun canGenerate(): Boolean {

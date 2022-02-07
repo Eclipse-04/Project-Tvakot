@@ -12,6 +12,7 @@ import mindustry.entities.Damage
 import mindustry.entities.bullet.BulletType
 import mindustry.gen.Building
 import mindustry.gen.Bullet
+import mindustry.gen.Sounds
 import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
@@ -22,6 +23,7 @@ import tvakot.content.TvaBullets
 
 open class LaserTower(name: String) : Block(name){
     var reloadTime = 0f
+    var shootSound = Sounds.spark
     var lightningColor: Color = Pal.lancerLaser
     var range = 220f
     var damageHit = 10f
@@ -74,6 +76,7 @@ open class LaserTower(name: String) : Block(name){
                         type = laserBullet
                     }
                 }
+                shootSound.at(x, y)
                 Damage.collideLine(hitBullet, team, Fx.none, x, y, tarRot, tarDst)
                 reload = 0f
                 chainLightning.at(x, y, 0f, lightningColor, otherTo)

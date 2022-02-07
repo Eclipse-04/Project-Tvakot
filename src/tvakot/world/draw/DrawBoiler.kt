@@ -32,25 +32,17 @@ class DrawBoiler : DrawHeatBlock(){
         lerpInput = Mathf.lerp(lerpInput,build.liquids.get(input) / build.block.liquidCapacity, 0.1f)
         if(inLiquidR != null && type.consumes.has(ConsumeType.liquid)){
             Drawf.liquid(inLiquidR, build.x, build.y,
-                build.liquids.get(input) / type.liquidCapacity,
+                build.liquids.get(input) / (type.liquidCapacity * 3),
                 input.color
             )
         }
-
-        if(type.outputLiquid != null && build.liquids.get(type.outputLiquid!!.liquid) > 0){
-            Drawf.liquid(liquidR, build.x, build.y,
-                build.liquids.get(type.outputLiquid!!.liquid) / type.liquidCapacity - 5,
-                type.outputLiquid!!.liquid.color
-            )
-        }
-
         rand.setSeed(build.pos().toLong())
         for (i in 0 until bubbles) {
             val x: Float = rand.range(spread)
             val y: Float = rand.range(spread)
             val life: Float = 1f - (Time.time / timeScl + rand.random(build.warmup)) % recurrence
             if (life > 0) {
-                Draw.color(mistColor,(1 - life) * lerpInput * (build.heatModule.heat / (build.block as HeatCrafter).heatCapacity) * 3f)
+                Draw.color(mistColor,(1 - life) * lerpInput * (build.heatModule.heat / (build.block as HeatCrafter).heatCapacity) * 17f)
                 Fill.circle(build.x + x, build.y + y, life * radius)
             }
         }

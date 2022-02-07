@@ -3,5 +3,5 @@ name: "tvakot"
 author: "Eclipse"
 main: "tvakot.Tvakot"
 description: "Trying Kotlin."
-version: 0.1.0
+version: 0.1.0.3
 minGameVersion: 135

@@ -3,10 +3,12 @@ package tvakot.comp
 import arc.math.geom.Position
 import arc.util.Time
 import mindustry.gen.Building
+import tvakot.world.blocks.TvaHeatBlock
 import tvakot.world.modules.TvakotHeatModule
 
 interface HeatBlockc : Position{
-    fun appectHeat(): Boolean{
+
+    fun appectHeat(source: TvaHeatBlock.TvaHeatBlockBuild?): Boolean{
         return true
     }
     fun heatModule(): TvakotHeatModule? {
@@ -24,18 +26,11 @@ interface HeatBlockc : Position{
     fun consumeHeatValid(): Boolean {
         return false
     }
-    fun giveHeat(to: Building, percent: Float){
-        if(to is HeatBlockc && to.heatModule()!!.heat < heatModule()!!.heat && to.appectHeat()) {
-            val giveAmount = heatModule()!!.heat * percent
+    fun giveHeat(from: Building, to: Building, percent: Float){
+        if(from is TvaHeatBlock.TvaHeatBlockBuild && to is HeatBlockc && to.heatModule()!!.heat < heatModule()!!.heat && to.appectHeat(from)) {
+            val giveAmount = from.heatModule().heat * percent
             to.heatModule()!!.heat += giveAmount
-            heatModule()!!.heat -= giveAmount
-        }
-    }
-    fun transferHeat(from: Building, to: Building, percent: Float){
-        if(from is HeatBlockc && to is HeatBlockc && to.heatModule()!!.heat < from.heatModule()!!.heat && to.appectHeat()) {
-            val giveAmount = from.heatModule()!!.heat * percent
-            to.heatModule()!!.heat += giveAmount
-            from.heatModule()!!.heat -= giveAmount
+            from.heatModule().heat -= giveAmount
         }
     }
     fun dumpHeat(building: Building, percent: Float){
@@ -46,7 +41,7 @@ interface HeatBlockc : Position{
             building.incrementDump(proximity.size)
             val other: Building? = proximity.get((i + dump) % proximity.size)
             if(other != null){
-                giveHeat(other, percent)
+                giveHeat(building, other, percent)
             }
         }
     }

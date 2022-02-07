@@ -10,10 +10,12 @@ class Tvakot : Mod(){
     }
 
     override fun loadContent(){
+        TvaFx().load()
         TvaStatusEffects().load()
         TvaBullets().load()
         TvaItems().load()
         TvaLiquids().load()
+        TvaUnitTypes().load()
         TvaBlocks().load()
         TvaTechTree().load()
     }

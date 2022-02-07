@@ -32,7 +32,7 @@ open class ThermalHeatGenerator(name: String) : HeatGenerator(name){
     }
     inner class ThermalHeatGeneratorBuild : HeatGeneratorBuild() {
         var sum = 0f
-        override fun appectHeat(): Boolean {
+        override fun appectHeat(source: TvaHeatBlockBuild?): Boolean {
             return true
         }
         override fun updateTile() {
