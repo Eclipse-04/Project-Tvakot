@@ -6,7 +6,6 @@ import arc.graphics.g2d.Fill
 import arc.graphics.g2d.TextureRegion
 import arc.math.Mathf
 import arc.math.Rand
-import arc.util.Log
 import arc.util.Time
 import mindustry.graphics.Drawf
 import mindustry.graphics.Pal
@@ -59,8 +58,6 @@ open class TurbineGenerator(name: String) : PowerGenerator(name) {
             productionEfficiency = satisfaction()
             warmup = Mathf.lerp(warmup, productionEfficiency, 0.1f)
             totalTime += warmup * 10
-            Log.info(rotor.size)
-            Log.info(rotorAmount)
         }
 
         override fun draw() {

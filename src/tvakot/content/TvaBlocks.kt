@@ -1,5 +1,6 @@
 package tvakot.content
 
+import mindustry.ai.types.MinerAI
 import mindustry.content.Bullets
 import mindustry.content.Fx
 import mindustry.content.Items
@@ -229,6 +230,31 @@ class TvaBlocks : ContentList {
         }
         //endregion
         //region Payload
+        draugConstructor = object : UnitSpawner("draug-miner-port"){}.apply {
+            requirements(
+                Category.units,
+                with(Items.copper, 75, Items.lead, 22, Items.graphite, 45)
+            )
+            consumes.power(1f)
+            size = 2
+            health = 570
+            unitAmount = 2
+            constructUnit = TvaUnitTypes.draugMiner
+            droneAI = MinerAI()
+            range = 0f
+        }
+        healerConstructor = object : UnitSpawner("healing-station"){}.apply {
+            requirements(
+                Category.units,
+                with(Items.titanium, 45, Items.silicon, 65, TvaItems.xaopnenBar, 45, Items.thorium, 25)
+            )
+            consumes.power(7f)
+            size = 2
+            health = 570
+            constructUnit = TvaUnitTypes.healDrone
+            unitAmount = 2
+            droneAI = RepairDroneAI()
+        }
         buildingDisassembler = object : PayloadDeconstructor("building-dis"){}.apply{
             requirements(
                 Category.units,
@@ -272,17 +298,6 @@ class TvaBlocks : ContentList {
             sectorOffset = 3f
             laserBullet = TvaBullets.LaserTowerLargeBulletType
         }
-        healerConstructor = object : UnitSpawner("healing-station"){}.apply {
-            requirements(
-                Category.effect,
-                with(Items.titanium, 45, Items.silicon, 65, TvaItems.xaopnenBar, 45, Items.thorium, 25)
-            )
-            consumes.power(7f)
-            size = 2
-            health = 570
-            constructUnit = TvaUnitTypes.healDrone
-            droneAI = RepairDroneAI()
-        }
         //endregion
     }
     companion object {
@@ -303,5 +318,6 @@ class TvaBlocks : ContentList {
         lateinit var xaopenForge: Block
         lateinit var heatVent: Block
         lateinit var healerConstructor: Block
+        lateinit var draugConstructor: Block
     }
 }

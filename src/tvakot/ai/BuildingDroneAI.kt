@@ -13,10 +13,6 @@ open class BuildingDroneAI : AIController() {
             this.range = range
         }
     }
-    override fun updateUnit() {
-        if(build != null && !build!!.isValid) unit.destroy()
-        super.updateUnit()
-    }
     override fun updateMovement() {
         if(idle()){
             moveTo(build, unit.range() * 0.25f)

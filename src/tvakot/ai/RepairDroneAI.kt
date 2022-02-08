@@ -1,5 +1,6 @@
 package tvakot.ai
 
+import arc.util.Log
 import mindustry.entities.Units
 import mindustry.gen.Building
 import mindustry.world.blocks.ConstructBlock
@@ -33,7 +34,7 @@ class RepairDroneAI : BuildingDroneAI() {
     }
     override fun updateTargeting() {
         var target = Units.findDamagedTile(unit.team, unit.x, unit.y)
-
+        Log.info(target.dst(build))
         if(target is ConstructBlock.ConstructBuild || (build != null && target != null && target.dst(build) > range)) target = null
         if(target == null){
             super.updateTargeting()
@@ -42,6 +43,6 @@ class RepairDroneAI : BuildingDroneAI() {
         }
     }
     override fun idle(): Boolean {
-        return target == null
+        return target !is Building
     }
 }

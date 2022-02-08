@@ -2,6 +2,7 @@ package tvakot.content
 
 import arc.func.Prov
 import arc.graphics.Color
+import mindustry.ai.types.MinerAI
 import mindustry.content.Fx
 import mindustry.ctype.ContentList
 import mindustry.entities.bullet.LaserBoltBulletType
@@ -10,12 +11,14 @@ import mindustry.graphics.Pal
 import mindustry.type.UnitType
 import mindustry.type.Weapon
 import mindustry.type.ammo.PowerAmmoType
+import tvakot.ai.RepairDroneAI
 import tvakot.entities.units.DroneUnitEntity
+import tvakot.entities.units.DroneUnitType
 
 
 class TvaUnitTypes : ContentList{
     override fun load() {
-        healDrone = object : UnitType("heal-drone") {
+        healDrone = object : DroneUnitType("heal-drone") {
             init {
                 speed = 3.4f
                 accel = 0.07f
@@ -26,6 +29,7 @@ class TvaUnitTypes : ContentList{
                 engineOffset = 3f
                 engineSize = 2f
                 faceTarget = true
+                defaultController = Prov{ RepairDroneAI() }
                 constructor = Prov{ DroneUnitEntity() }
                 engineColor = Pal.heal
                 ammoType = PowerAmmoType(1000f)
@@ -47,8 +51,29 @@ class TvaUnitTypes : ContentList{
                 })
             }
         }
+
+        draugMiner = object : DroneUnitType("draug") {
+            init {
+                defaultController = Prov{ MinerAI() }
+                speed = 2.85f
+                accel = 0.09f
+
+                drag = 0.1f
+                flying = true
+                mineTier = 2
+                range = 65f
+                mineSpeed = 4.2f
+                rotateSpeed = 6.5f
+                health = 250f
+                engineOffset = 4.5f
+                engineSize = 2.7f
+                constructor = Prov{ DroneUnitEntity() }
+                //weapons.add(Weapon("you have incurred my wrath. prepare to die."))
+            }
+        }
     }
     companion object {
         lateinit var healDrone: UnitType
+        lateinit var draugMiner: UnitType
     }
 }
