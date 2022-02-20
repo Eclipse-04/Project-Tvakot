@@ -11,7 +11,13 @@ class TvaFx : ContentList {
     override fun load() {
         xaoForgeSmoke = Effect(100f) { e ->
             val interp = Interp.smooth
-            Draw.color(Color.valueOf("7685aa").lerp(Color.valueOf("5c567a"), interp.apply(e.fin())))
+            Draw.color(Color.valueOf("676593").lerp(Color.white, interp.apply(e.fin())))
+            Draw.alpha(e.fout())
+            Fill.circle(e.x, e.y + e.fin() * 40, e.fin() * 5f)
+        }
+        smelterSmoke = Effect(120f) { e ->
+            val interp = Interp.smooth
+            Draw.color(Color.valueOf("7685aa").lerp(Color.white, interp.apply(e.fin())))
             Draw.alpha(e.fout())
             Fill.circle(e.x, e.y + e.fin() * 30, e.fin() * 4f)
         }
@@ -23,6 +29,7 @@ class TvaFx : ContentList {
     }
     companion object {
         lateinit var xaoForgeSmoke: Effect
+        lateinit var smelterSmoke: Effect
         lateinit var smallSmoke: Effect
     }
 }

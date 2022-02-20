@@ -1,6 +1,7 @@
 package tvakot.content
 
 import mindustry.ai.types.MinerAI
+import mindustry.ai.types.RepairAI
 import mindustry.content.Bullets
 import mindustry.content.Fx
 import mindustry.content.Items
@@ -13,7 +14,6 @@ import mindustry.world.Block
 import mindustry.world.blocks.payloads.PayloadDeconstructor
 import mindustry.world.blocks.power.DecayGenerator
 import mindustry.world.meta.BuildVisibility
-import tvakot.ai.RepairDroneAI
 import tvakot.world.blocks.crafting.HeatCrafter
 import tvakot.world.blocks.defensive.ShatterWall
 import tvakot.world.blocks.defensive.turret.OverdriveTurret
@@ -57,6 +57,33 @@ class TvaBlocks : ContentList {
                 coolingAmount = 0.02f
             }
         }
+        novem = object : OverdriveTurret("novem"){
+            init {
+                requirements(
+                    Category.turret,
+                    with(TvaItems.denseIngot, 34, Items.silicon, 35, Items.graphite, 45, Items.plastanium, 32)
+                )
+                ammo(
+                    TvaItems.xaopnenBar, TvaBullets.homingMissleXaonpen,
+                    TvaItems.denseIngot, TvaBullets.homingMissleDense
+                )
+                health = 750
+                maxAmmo = 60
+                reloadTime = 2.1f
+                heatPerShot = 0.45f
+                range = 180f
+                size = 2
+                shootLength = 4.5f
+                alternate = true
+                shots = 2
+                spread = 4.5f
+                inaccuracy = 50f
+                overdriveMax = 14f
+                coolingAmount = 0.03f
+            }
+        }
+        //endregion
+        //region production
         //endregion
         //region distribution
         heatNode = object : HeatNode("heat-node"){}.apply {
@@ -159,10 +186,12 @@ class TvaBlocks : ContentList {
             customConsume.heat = 2f
             craftTime = 6f
             liquidCapacity = 180f
-            drawerCustom = DrawBoiler()
+            drawerCustom = DrawBoiler().apply{
+                spread = 5.6f
+            }
             consumes.liquid(Liquids.water, 0.2f)
             outputLiquid = LiquidStack(TvaLiquids.steam, 1.4f)
-            heatCapacity = 300f
+            heatCapacity = 350f
             craftEffect = Fx.none
         }
         methanolCompressor = object : HeatCrafter("methanol-compressor"){}.apply {
@@ -183,7 +212,7 @@ class TvaBlocks : ContentList {
             consumes.item(Items.sporePod, 2)
             customConsume.heat = 3f
             outputLiquid = LiquidStack(TvaLiquids.methanol, 33f)
-            heatCapacity = 300f
+            heatCapacity = 350f
             craftEffect = Fx.none
         }
         heater = object : BurnerHeatGenerator("heater"){}.apply {
@@ -195,7 +224,7 @@ class TvaBlocks : ContentList {
             heatLoss = 0.005
             generateTime = 100f
             heatGenerate = 4f
-            heatCapacity = 300f
+            heatCapacity = 350f
             squareSprite = false
         }
         heatVent = object : HeatRegulator("heat-vent"){}.apply {
@@ -228,6 +257,26 @@ class TvaBlocks : ContentList {
             craftEffect = Fx.smeltsmoke
             outputItems = arrayOf(*with(TvaItems.xaopnenBar, 1))
         }
+        smelter = object : HeatCrafter("smelter"){}.apply {
+            requirements(
+                Category.crafting,
+                with(Items.lead, 45,Items.graphite, 35, Items.titanium, 25)
+            )
+            size = 3
+            health = 980
+            heatLoss = 0.005
+            customConsume.heat = 7f
+            drawerCustom = DrawHeatSmelter()
+            minHeatRequire = 200f
+            heatCapacity = 400f
+            updateEffectRange = 1.5f
+            updateEffect = TvaFx.smelterSmoke
+            updateEffectChance = 1.0
+            craftTime = 40f
+            craftEffect = Fx.smeltsmoke
+            consumes.items(*with(Items.lead, 2, Items.copper, 2))
+            outputItems = arrayOf(*with(TvaItems.denseIngot, 1))
+        }
         //endregion
         //region Payload
         draugConstructor = object : UnitSpawner("draug-miner-port"){}.apply {
@@ -235,10 +284,10 @@ class TvaBlocks : ContentList {
                 Category.units,
                 with(Items.copper, 75, Items.lead, 22, Items.graphite, 45)
             )
-            consumes.power(1f)
+            consumes.power(1.2f)
             size = 2
             health = 570
-            unitAmount = 2
+            unitAmount = 1
             constructUnit = TvaUnitTypes.draugMiner
             droneAI = MinerAI()
             range = 0f
@@ -246,14 +295,17 @@ class TvaBlocks : ContentList {
         healerConstructor = object : UnitSpawner("healing-station"){}.apply {
             requirements(
                 Category.units,
-                with(Items.titanium, 45, Items.silicon, 65, TvaItems.xaopnenBar, 45, Items.thorium, 25)
+                with(Items.titanium, 45, Items.silicon, 65, TvaItems.denseIngot, 45)
             )
-            consumes.power(7f)
+            consumes.power(2.9f)
+            consumes.items(*with(Items.silicon, 30, Items.lead, 15))
             size = 2
+            itemCapacity = 30
+            range = 0f
             health = 570
             constructUnit = TvaUnitTypes.healDrone
             unitAmount = 2
-            droneAI = RepairDroneAI()
+            droneAI = RepairAI()
         }
         buildingDisassembler = object : PayloadDeconstructor("building-dis"){}.apply{
             requirements(
@@ -306,6 +358,7 @@ class TvaBlocks : ContentList {
         lateinit var pulseTowerSmall: Block
         lateinit var metaglassWall: Block
         lateinit var laxo: Block
+        lateinit var novem: Block
         lateinit var buildingDisassembler: Block
         lateinit var heater: Block
         lateinit var boiler: Block
@@ -316,6 +369,7 @@ class TvaBlocks : ContentList {
         lateinit var heatNode: Block
         lateinit var heatPipe: Block
         lateinit var xaopenForge: Block
+        lateinit var smelter: Block
         lateinit var heatVent: Block
         lateinit var healerConstructor: Block
         lateinit var draugConstructor: Block

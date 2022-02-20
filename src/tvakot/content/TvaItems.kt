@@ -17,15 +17,15 @@ class TvaItems : ContentList{
                 color = Color.valueOf("5c567a")
             }
         }
-        heatModule = object : Item("heat-module"){
+        denseIngot = object : Item("dense-ingot"){
             init {
-                color = Color.valueOf("b87a5c")
+                color = Color.valueOf("9a9fb4")
             }
         }
     }
     companion object {
         lateinit var xaopnen: Item
         lateinit var xaopnenBar: Item
-        lateinit var heatModule: Item
+        lateinit var denseIngot: Item
     }
 }

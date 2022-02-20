@@ -32,7 +32,7 @@ class DrawBoiler : DrawHeatBlock(){
         lerpInput = Mathf.lerp(lerpInput,build.liquids.get(input) / build.block.liquidCapacity, 0.1f)
         if(inLiquidR != null && type.consumes.has(ConsumeType.liquid)){
             Drawf.liquid(inLiquidR, build.x, build.y,
-                build.liquids.get(input) / (type.liquidCapacity * 3),
+                build.liquids.get(input) / (type.liquidCapacity),
                 input.color
             )
         }

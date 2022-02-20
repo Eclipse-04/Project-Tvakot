@@ -51,6 +51,7 @@ open class UnitSpawner(name: String): Block(name) {
             warmup = if(units.size < unitAmount && consValid()) Mathf.lerp(warmup, efficiency(), 0.07f) else Mathf.lerp(warmup, 0f, 0.07f)
             if(progress >= timeConstruct && units.size < unitAmount){
                 progress %= timeConstruct
+                consume()
                 val u = constructUnit.spawn(team, this) as DroneUnitEntity
                 u.spawnerBuilding = pos()
                 u.set(x, y)

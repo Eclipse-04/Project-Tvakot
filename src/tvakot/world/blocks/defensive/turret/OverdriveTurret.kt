@@ -20,7 +20,7 @@ open class OverdriveTurret(name: String) : ItemTurret(name){
             Bar(
                 {
                     if(entity.canShoot){
-                        return@Bar Core.bundle.get("bar.tvakot-heatoverload")
+                        return@Bar Core.bundle.get("bar.tvakot-heat")
                     }else return@Bar Core.bundle.get("bar.tvakot-overheat")
                 },
                 {entity.getBarColor()},

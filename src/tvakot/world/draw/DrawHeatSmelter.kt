@@ -50,7 +50,7 @@ class DrawHeatSmelter : DrawHeatBlock() {
             Draw.color(1f, 1f, 1f, build.warmup)
             Fill.circle(build.x, build.y, flameRadiusIn + Mathf.absin(Time.time, flameRadiusScl, flameRadiusInMag) + cr)
             Draw.color()
-            Draw.rect(top1, build.x, build.y)
+            if(top1 != null && top1!!.found()) Draw.rect(top1, build.x, build.y)
         }
     }
 

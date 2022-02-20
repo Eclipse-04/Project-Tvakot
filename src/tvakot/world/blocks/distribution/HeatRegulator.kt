@@ -20,12 +20,14 @@ open class HeatRegulator(name: String) : TvaHeatBlock(name) {
         }
         override fun buildConfiguration(table: Table) {
             val label = Label(config().toString())
-            table.row()
-            table.slider(0f, heatCapacity, 10f, config(), false) {f ->
-                configure(f)
-                label.setText(config().toString())
+            table.table {
+                table.slider(0f, heatCapacity, 10f, config(), false) { f ->
+                    configure(f)
+                    label.setText(config().toString())
+                }
+                table.row()
+                table.add(label)
             }
-            table.add(label)
         }
         override fun appectHeat(source: TvaHeatBlockBuild?): Boolean {
             return if(source != null){

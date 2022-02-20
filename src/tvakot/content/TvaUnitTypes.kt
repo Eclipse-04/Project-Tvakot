@@ -3,6 +3,7 @@ package tvakot.content
 import arc.func.Prov
 import arc.graphics.Color
 import mindustry.ai.types.MinerAI
+import mindustry.ai.types.RepairAI
 import mindustry.content.Fx
 import mindustry.ctype.ContentList
 import mindustry.entities.bullet.LaserBoltBulletType
@@ -11,7 +12,6 @@ import mindustry.graphics.Pal
 import mindustry.type.UnitType
 import mindustry.type.Weapon
 import mindustry.type.ammo.PowerAmmoType
-import tvakot.ai.RepairDroneAI
 import tvakot.entities.units.DroneUnitEntity
 import tvakot.entities.units.DroneUnitType
 
@@ -21,6 +21,7 @@ class TvaUnitTypes : ContentList{
         healDrone = object : DroneUnitType("heal-drone") {
             init {
                 speed = 3.4f
+                defaultController = Prov{ RepairAI() }
                 accel = 0.07f
                 drag = 0.1f
                 flying = true
@@ -29,7 +30,6 @@ class TvaUnitTypes : ContentList{
                 engineOffset = 3f
                 engineSize = 2f
                 faceTarget = true
-                defaultController = Prov{ RepairDroneAI() }
                 constructor = Prov{ DroneUnitEntity() }
                 engineColor = Pal.heal
                 ammoType = PowerAmmoType(1000f)
