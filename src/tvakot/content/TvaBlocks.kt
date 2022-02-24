@@ -7,6 +7,7 @@ import mindustry.content.Fx
 import mindustry.content.Items
 import mindustry.content.Liquids
 import mindustry.ctype.ContentList
+import mindustry.gen.Sounds
 import mindustry.type.Category
 import mindustry.type.ItemStack.with
 import mindustry.type.LiquidStack
@@ -17,16 +18,11 @@ import mindustry.world.meta.BuildVisibility
 import tvakot.world.blocks.crafting.HeatCrafter
 import tvakot.world.blocks.defensive.ShatterWall
 import tvakot.world.blocks.defensive.turret.OverdriveTurret
-import tvakot.world.blocks.distribution.HeatNode
-import tvakot.world.blocks.distribution.HeatPipe
-import tvakot.world.blocks.distribution.HeatRegulator
+import tvakot.world.blocks.distribution.*
 import tvakot.world.blocks.effect.LaserTower
-import tvakot.world.blocks.power.BurnerHeatGenerator
-import tvakot.world.blocks.power.ThermalHeatGenerator
-import tvakot.world.blocks.power.TurbineGenerator
+import tvakot.world.blocks.power.*
 import tvakot.world.blocks.units.UnitSpawner
-import tvakot.world.draw.DrawBoiler
-import tvakot.world.draw.DrawHeatSmelter
+import tvakot.world.draw.*
 
 class TvaBlocks : ContentList {
 
@@ -80,6 +76,7 @@ class TvaBlocks : ContentList {
                 inaccuracy = 50f
                 overdriveMax = 14f
                 coolingAmount = 0.03f
+                shootSound = Sounds.missile
             }
         }
         //endregion
@@ -171,7 +168,19 @@ class TvaBlocks : ContentList {
             health = 1850
             size = 2
             shatterInaccuracy = 30f
-            shatterBullet = TvaBullets.ShatterBullet
+            shatterBullet = TvaBullets.shatterBullet
+        }
+        xaopexWall = object : ShatterWall("xaopex-wall"){}.apply {
+            requirements(
+                Category.defense,
+                with(TvaItems.xaopnenBar, 12, TvaItems.xeopnax, 12)
+            )
+            shatterChance = 0.7
+            maxShatter = 1
+            health = 3950
+            size = 2
+            shatterInaccuracy = 360f
+            shatterBullet = TvaBullets.pulseWallBullet
         }
         //endregion
         //region crafting
@@ -288,6 +297,7 @@ class TvaBlocks : ContentList {
             size = 2
             health = 570
             unitAmount = 1
+            timeConstruct = 1332f
             constructUnit = TvaUnitTypes.draugMiner
             droneAI = MinerAI()
             range = 0f
@@ -302,6 +312,7 @@ class TvaBlocks : ContentList {
             size = 2
             itemCapacity = 30
             range = 0f
+            timeConstruct = 2100f
             health = 570
             constructUnit = TvaUnitTypes.healDrone
             unitAmount = 2
@@ -357,6 +368,7 @@ class TvaBlocks : ContentList {
         lateinit var pulseTower: Block
         lateinit var pulseTowerSmall: Block
         lateinit var metaglassWall: Block
+        lateinit var xaopexWall: Block
         lateinit var laxo: Block
         lateinit var novem: Block
         lateinit var buildingDisassembler: Block

@@ -17,6 +17,11 @@ class TvaItems : ContentList{
                 color = Color.valueOf("5c567a")
             }
         }
+        xeopnax = object : Item("xeopnax"){
+            init {
+                color = Color.valueOf("676486")
+            }
+        }
         denseIngot = object : Item("dense-ingot"){
             init {
                 color = Color.valueOf("9a9fb4")
@@ -26,6 +31,7 @@ class TvaItems : ContentList{
     companion object {
         lateinit var xaopnen: Item
         lateinit var xaopnenBar: Item
+        lateinit var xeopnax: Item
         lateinit var denseIngot: Item
     }
 }

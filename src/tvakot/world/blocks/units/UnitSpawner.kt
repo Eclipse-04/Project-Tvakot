@@ -68,7 +68,6 @@ open class UnitSpawner(name: String): Block(name) {
                 if (i.dead) {
                     units.remove(i)
                 }
-                i.clearCommand()
             }
         }
         override fun drawSelect() {

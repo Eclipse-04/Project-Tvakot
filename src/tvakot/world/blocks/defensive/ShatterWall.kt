@@ -18,7 +18,7 @@ open class ShatterWall(name: String) : Wall(name){
             super.collision(bullet)
             if(bullet.type.hittable) {
                 val shatterAmount = Mathf.clamp((bullet.damage() / damagePerShatter).toInt(), 1, maxShatter)
-                for (i in 0..shatterAmount) {
+                for (i in 0 until shatterAmount) {
                     if (Mathf.chance(shatterChance)) {
                         shatterBullet.create(
                             this, this.team, bullet.x, bullet.y, bullet.rotation()
