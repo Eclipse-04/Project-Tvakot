@@ -1,5 +1,6 @@
 package tvakot.content
 
+import arc.graphics.Color
 import mindustry.ai.types.MinerAI
 import mindustry.ai.types.RepairAI
 import mindustry.content.Bullets
@@ -12,17 +13,25 @@ import mindustry.type.Category
 import mindustry.type.ItemStack.with
 import mindustry.type.LiquidStack
 import mindustry.world.Block
+import mindustry.world.blocks.defense.turrets.ItemTurret
+import mindustry.world.blocks.defense.turrets.PowerTurret
 import mindustry.world.blocks.payloads.PayloadDeconstructor
 import mindustry.world.blocks.power.DecayGenerator
+import mindustry.world.blocks.storage.CoreBlock
 import mindustry.world.meta.BuildVisibility
 import tvakot.world.blocks.crafting.HeatCrafter
 import tvakot.world.blocks.defensive.ShatterWall
 import tvakot.world.blocks.defensive.turret.OverdriveTurret
-import tvakot.world.blocks.distribution.*
+import tvakot.world.blocks.distribution.HeatNode
+import tvakot.world.blocks.distribution.HeatPipe
+import tvakot.world.blocks.distribution.HeatRegulator
 import tvakot.world.blocks.effect.LaserTower
-import tvakot.world.blocks.power.*
+import tvakot.world.blocks.power.BurnerHeatGenerator
+import tvakot.world.blocks.power.ThermalHeatGenerator
+import tvakot.world.blocks.power.TurbineGenerator
 import tvakot.world.blocks.units.UnitSpawner
-import tvakot.world.draw.*
+import tvakot.world.draw.DrawBoiler
+import tvakot.world.draw.DrawHeatSmelter
 
 class TvaBlocks : ContentList {
 
@@ -79,8 +88,53 @@ class TvaBlocks : ContentList {
                 shootSound = Sounds.missile
             }
         }
-        //endregion
-        //region production
+        penetrate = object : ItemTurret("penetrate"){
+            init {
+                ammo(
+                    Items.titanium, TvaBullets.lightningRicochet,
+                    Items.surgeAlloy, TvaBullets.surgeLightningRicochet
+                )
+            }
+        }.apply {
+            requirements(
+                Category.turret,
+                with(Items.titanium, 35, Items.silicon, 25, Items.graphite, 30)
+            )
+            health = 760
+            size = 2
+            reloadTime = 60f
+            range = 232f
+            shots = 2
+            shootLength = 2.5f
+            shootSound = Sounds.shootBig
+            burstSpacing = 5f
+            inaccuracy = 5f
+        }
+        ignis = object : PowerTurret("ignis"){}.apply {
+            requirements(
+                Category.turret,
+                with(Items.lead, 25, Items.silicon, 20, Items.titanium, 32)
+            )
+            range = 180f
+            chargeTime = 40f
+            chargeMaxDelay = 30f
+            chargeEffects = 7
+            recoilAmount = 2f
+            reloadTime = 90f
+            cooldown = 0.03f
+            shootLength = 1f
+            powerUse = 8f
+            shootShake = 2f
+            shootEffect = Fx.lancerLaserShoot
+            smokeEffect = Fx.none
+            chargeEffect = Fx.lancerLaserCharge
+            chargeBeginEffect = Fx.lancerLaserChargeBegin
+            heatColor = Color.red
+            size = 2
+            health = 280 * size * size
+            shootSound = Sounds.laser
+            shootType = TvaBullets.standardOrbLightning
+        }
         //endregion
         //region distribution
         heatNode = object : HeatNode("heat-node"){}.apply {
@@ -330,6 +384,25 @@ class TvaBlocks : ContentList {
             health = 720
         }
         //region Effect
+        coreFragment = object : CoreBlock("core-fragment"){
+            init {
+                requirements(
+                    Category.effect,
+                    BuildVisibility.editorOnly,
+                    with(Items.copper, 800, Items.lead, 1200)
+                )
+                alwaysUnlocked = true
+                health = 2500
+                itemCapacity = 7000
+                size = 3
+                unitCapModifier = 12
+                unitType = TvaUnitTypes.epsilon
+            }
+
+            override fun isHidden(): Boolean {
+                return false
+            }
+        }
         pulseTowerSmall = object : LaserTower("small-pulse-tower"){}.apply {
             requirements(
                 Category.effect,
@@ -371,6 +444,8 @@ class TvaBlocks : ContentList {
         lateinit var xaopexWall: Block
         lateinit var laxo: Block
         lateinit var novem: Block
+        lateinit var penetrate: Block
+        lateinit var ignis: Block
         lateinit var buildingDisassembler: Block
         lateinit var heater: Block
         lateinit var boiler: Block
@@ -385,5 +460,6 @@ class TvaBlocks : ContentList {
         lateinit var heatVent: Block
         lateinit var healerConstructor: Block
         lateinit var draugConstructor: Block
+        lateinit var coreFragment: Block
     }
 }

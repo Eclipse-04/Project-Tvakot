@@ -20,12 +20,34 @@ import tvakot.entities.units.DroneUnitEntity
 
 class TvaUnitTypes : ContentList{
     override fun load() {
+        //core units
+        epsilon = UnitType("epsilon").apply{
+            speed = 0.95f
+            health = 550f
+            canBoost = true
+            hitSize = 8.5f
+            buildSpeed = 1.5f
+            mineTier = 2
+            mineSpeed = 2f
+            boostMultiplier = 1.4f
+            constructor = Prov{ MechUnit.create() }
+            mechSideSway = 0.3f
+            weapons.add(Weapon("tvakot-heavy-ricochet").apply{
+                top = false
+                reload = 10f
+                x = 6.5f
+                inaccuracy = 5f
+                bullet = TvaBullets.standardRicochet.apply {
+                    buildingDamageMultiplier = 0.01f
+                }
+            })
+        }
+        //endregion
         //ground attack
         castle = UnitType("castle").apply{
             speed = 0.7f
             hitSize = 8f
             health = 250f
-            range = 120f
             mechSideSway = 0.3f
             constructor = Prov{ MechUnit.create() }
             weapons.add(Weapon("tvakot-rocketlauncher").apply{
@@ -103,11 +125,10 @@ class TvaUnitTypes : ContentList{
                 shootSound = Sounds.bang
                 ejectEffect = Fx.shootBig
                 inaccuracy = 4f
-                bullet = RicochetBulletType().apply {
+                bullet = RicochetBulletType(4, 4).apply {
                     speed = 7f
                     damage = 30f
                     width = 11f
-                    bounceTime = 3
                     trailLength = 9
                     trailColor = Pal.bulletYellowBack
                     height = 25f
@@ -116,17 +137,7 @@ class TvaUnitTypes : ContentList{
                     shootEffect = Fx.shootBig
                 }
             })
-            weapons.add(Weapon("tvakot-mini-rocket-launcher").apply{
-                shots = 2
-                shotDelay = 2f
-                spacing = 1.75f
-                reload = 10f
-                x = 7f
-                y = -5.25f
-                shootSound = Sounds.missile
-                inaccuracy = 10f
-                bullet = TvaBullets.standardHomingMissle
-            })
+            weapons.add(TvaWeapons.smallRapidRocket)
         }
         //endregion
         //drone
@@ -189,5 +200,6 @@ class TvaUnitTypes : ContentList{
         lateinit var castle: UnitType
         lateinit var bastille: UnitType
         lateinit var citadel: UnitType
+        lateinit var epsilon: UnitType
     }
 }

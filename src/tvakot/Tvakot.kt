@@ -20,6 +20,7 @@ class Tvakot : Mod(){
         TvaBullets().load()
         TvaItems().load()
         TvaLiquids().load()
+        TvaWeapons().load()
         TvaUnitTypes().load()
         TvaBlocks().load()
         TvaTechTree().load()

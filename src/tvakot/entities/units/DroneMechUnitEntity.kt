@@ -9,7 +9,6 @@ class DroneMechUnitEntity : MechUnit() {
     override fun cap(): Int {
         return count() + 3
     }
-    //totally allowed by MEEP (real)
     fun getPad(): Building?{
         return if(spawnerBuilding != null) world.build(spawnerBuilding!!) else null
     }
