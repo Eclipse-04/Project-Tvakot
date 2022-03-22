@@ -23,6 +23,8 @@ class Tvakot : Mod(){
         TvaWeapons().load()
         TvaUnitTypes().load()
         TvaBlocks().load()
+        TvaPlanets().load()
+        TvaSectorPresets().load()
         TvaTechTree().load()
 
         (Blocks.groundFactory as UnitFactory).plans.add(

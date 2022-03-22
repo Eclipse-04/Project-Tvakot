@@ -6,6 +6,7 @@ import arc.graphics.g2d.Fill
 import arc.graphics.g2d.Lines
 import arc.math.Mathf
 import arc.util.Time
+import mindustry.Vars.tilesize
 import mindustry.content.Fx
 import mindustry.content.Fx.chainLightning
 import mindustry.entities.Damage
@@ -51,7 +52,7 @@ open class LaserTower(name: String) : Block(name){
     }
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
-        Drawf.dashCircle(x.toFloat(), y.toFloat(), range, Pal.accent)
+        Drawf.dashCircle(x * tilesize.toFloat(), y * tilesize.toFloat(), range, Pal.accent)
     }
     inner class LaserTowerBuild : Building() {
         private var reload = 0f

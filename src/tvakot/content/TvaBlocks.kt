@@ -1,8 +1,6 @@
 package tvakot.content
 
 import arc.graphics.Color
-import mindustry.ai.types.MinerAI
-import mindustry.ai.types.RepairAI
 import mindustry.content.Bullets
 import mindustry.content.Fx
 import mindustry.content.Items
@@ -15,9 +13,12 @@ import mindustry.type.LiquidStack
 import mindustry.world.Block
 import mindustry.world.blocks.defense.turrets.ItemTurret
 import mindustry.world.blocks.defense.turrets.PowerTurret
+import mindustry.world.blocks.environment.OreBlock
 import mindustry.world.blocks.payloads.PayloadDeconstructor
 import mindustry.world.blocks.power.DecayGenerator
+import mindustry.world.blocks.production.GenericCrafter
 import mindustry.world.blocks.storage.CoreBlock
+import mindustry.world.draw.DrawGlow
 import mindustry.world.meta.BuildVisibility
 import tvakot.world.blocks.crafting.HeatCrafter
 import tvakot.world.blocks.defensive.ShatterWall
@@ -36,6 +37,15 @@ import tvakot.world.draw.DrawHeatSmelter
 class TvaBlocks : ContentList {
 
     override fun load() {
+        //region environment
+        oreXaopnen = object : OreBlock(TvaItems.xaopnen) {
+            init {
+                oreDefault = true
+                oreThreshold = 0.828f
+                oreScale = 20.952381f
+            }
+        }
+        //endregion
         //region Turret
         laxo = object : OverdriveTurret("laxo"){
             init {
@@ -60,6 +70,25 @@ class TvaBlocks : ContentList {
                 inaccuracy = 4f
                 overdriveMax = 10f
                 coolingAmount = 0.02f
+            }
+        }
+        railGun = object : ItemTurret("rail-gun"){
+            init {
+                requirements(
+                    Category.turret,
+                    with(Items.copper, 55, Items.lead, 20)
+                )
+                health = 350
+                range = 210f
+                ammoPerShot = 2
+                reloadTime = 40f
+                shootLength = 3.75f
+                ammo(
+                    Items.lead, TvaBullets.standardrailBullet,
+                    Items.graphite, TvaBullets.denserailBullet,
+                    TvaItems.xaopnenBar, TvaBullets.flakrailBullet
+                )
+                limitRange()
             }
         }
         novem = object : OverdriveTurret("novem"){
@@ -155,7 +184,7 @@ class TvaBlocks : ContentList {
             health = 80
             heatCapacity = 600f
             heatLoss = 0.0005
-            dumpSpeed = 0.2f
+            dumpSpeed = 0.4f
         }
         //endregion
         //region Power
@@ -166,7 +195,7 @@ class TvaBlocks : ContentList {
             )
             buildVisibility = BuildVisibility.sandboxOnly
             powerProduction = 1.75f
-            health = 75
+            health = 175
             itemDuration = 1840f
         }
         geothermalCollector = object : ThermalHeatGenerator("thermal-heat-gen"){}.apply{
@@ -193,6 +222,7 @@ class TvaBlocks : ContentList {
             liquidCapacity = 20f
             consumes.liquid(TvaLiquids.steam, 0.1f)
             powerProduction = 7.5f
+            radius = 2.3f
         }
         thermalTurbine = object : TurbineGenerator("thermal-turbine"){}.apply {
             requirements(
@@ -202,12 +232,14 @@ class TvaBlocks : ContentList {
             rotorAmount = 2
             size = 3
             health = 2750
-            spread = 6f
+            spread = 4f
             minLiquidRequired = 75f
             liquidCapacity = 100f
+            rotorSpeed[1] = 8f
             consumes.liquid(TvaLiquids.steam, 0.37f)
             powerProduction = 24f
             bubbles = 35
+            spinAmount = 180f
         }
         //endregion
         //region Defensive
@@ -283,12 +315,30 @@ class TvaBlocks : ContentList {
                 Category.crafting,
                 with(Items.copper, 18, Items.lead, 22)
             )
+            hasItems = true
             health = 90
             heatLoss = 0.005
             generateTime = 100f
             heatGenerate = 4f
             heatCapacity = 350f
             squareSprite = false
+        }
+        combustionHeater = object : BurnerHeatGenerator("comburstion-burner"){}.apply {
+            requirements(
+                Category.crafting,
+                with(Items.lead, 75, Items.graphite, 25, Items.metaglass, 25, Items.silicon, 25)
+            )
+            hasItems = true
+            hasLiquids = true
+            size = 2
+            health = 350
+            liquidCapacity = 90f
+            heatLoss = 0.005
+            generateTime = 75f
+            heatGenerate = 10f
+            heatGenerateLiquid = 12f
+            liquidUsage = 0.15f
+            heatCapacity = 600f
         }
         heatVent = object : HeatRegulator("heat-vent"){}.apply {
             requirements(
@@ -303,7 +353,7 @@ class TvaBlocks : ContentList {
         xaopenForge = object : HeatCrafter("xaopen-forge"){}.apply {
             requirements(
                 Category.crafting,
-                with(Items.lead, 45,Items.graphite, 35, Items.titanium, 25)
+                with(Items.lead, 45,Items.graphite, 35)
             )
             size = 2
             health = 350
@@ -313,12 +363,31 @@ class TvaBlocks : ContentList {
             minHeatRequire = 150f
             heatCapacity = 350f
             updateEffectRange = 1.5f
-            updateEffect = TvaFx.xaoForgeSmoke
+            updateEffect = TvaFx.forgeSmoke
             updateEffectChance = 1.0
             craftTime = 30f
             consumes.items(*with(TvaItems.xaopnen, 1, Items.sand, 1))
             craftEffect = Fx.smeltsmoke
             outputItems = arrayOf(*with(TvaItems.xaopnenBar, 1))
+        }
+        xaopenInfuser = object : HeatCrafter("xaopnen-infuser"){}.apply {
+            requirements(
+                Category.crafting,
+                with(Items.titanium, 25,Items.graphite, 35, TvaItems.denseIngot, 25)
+            )
+            size = 2
+            health = 350
+            heatLoss = 0.005
+            customConsume.heat = 1.5f
+            drawerCustom = DrawHeatSmelter().apply {
+                flameRadius = 4f
+            }
+            heatCapacity = 350f
+            minHeatRequire = 150f
+            craftTime = 60f
+            consumes.items(*with(Items.titanium, 1, Items.graphite, 1))
+            craftEffect = Fx.smeltsmoke
+            outputItems = arrayOf(*with(TvaItems.xaopnen, 1))
         }
         smelter = object : HeatCrafter("smelter"){}.apply {
             requirements(
@@ -340,12 +409,27 @@ class TvaBlocks : ContentList {
             consumes.items(*with(Items.lead, 2, Items.copper, 2))
             outputItems = arrayOf(*with(TvaItems.denseIngot, 1))
         }
+        electrolizer = object : GenericCrafter("electrolizer"){}.apply {
+            requirements(
+                Category.crafting,
+                with(TvaItems.xaopnenBar, 45,Items.silicon, 25, Items.titanium, 25)
+            )
+            size = 2
+            health = 980
+            craftTime = 40f
+            ambientSound = Sounds.spark
+            drawer = DrawGlow()
+            craftEffect = Fx.smeltsmoke
+            consumes.power(2.4f)
+            consumes.items(*with(TvaItems.xaopnenBar, 2, Items.thorium, 1))
+            outputItems = arrayOf(*with(TvaItems.xeopnax, 1))
+        }
         //endregion
         //region Payload
         draugConstructor = object : UnitSpawner("draug-miner-port"){}.apply {
             requirements(
                 Category.units,
-                with(Items.copper, 75, Items.lead, 22, Items.graphite, 45)
+                with(Items.copper, 70, Items.lead, 30)
             )
             consumes.power(1.2f)
             size = 2
@@ -353,7 +437,6 @@ class TvaBlocks : ContentList {
             unitAmount = 1
             timeConstruct = 1332f
             constructUnit = TvaUnitTypes.draugMiner
-            droneAI = MinerAI()
             range = 0f
         }
         healerConstructor = object : UnitSpawner("healing-station"){}.apply {
@@ -370,7 +453,6 @@ class TvaBlocks : ContentList {
             health = 570
             constructUnit = TvaUnitTypes.healDrone
             unitAmount = 2
-            droneAI = RepairAI()
         }
         buildingDisassembler = object : PayloadDeconstructor("building-dis"){}.apply{
             requirements(
@@ -437,17 +519,22 @@ class TvaBlocks : ContentList {
         //endregion
     }
     companion object {
+        //env
+        lateinit var oreXaopnen: Block
+        //building
         lateinit var rtgCell: Block
         lateinit var pulseTower: Block
         lateinit var pulseTowerSmall: Block
         lateinit var metaglassWall: Block
         lateinit var xaopexWall: Block
         lateinit var laxo: Block
+        lateinit var railGun: Block
         lateinit var novem: Block
         lateinit var penetrate: Block
         lateinit var ignis: Block
         lateinit var buildingDisassembler: Block
         lateinit var heater: Block
+        lateinit var combustionHeater: Block
         lateinit var boiler: Block
         lateinit var methanolCompressor: Block
         lateinit var turbine: Block
@@ -455,8 +542,10 @@ class TvaBlocks : ContentList {
         lateinit var thermalTurbine: Block
         lateinit var heatNode: Block
         lateinit var heatPipe: Block
+        lateinit var xaopenInfuser: Block
         lateinit var xaopenForge: Block
         lateinit var smelter: Block
+        lateinit var electrolizer: Block
         lateinit var heatVent: Block
         lateinit var healerConstructor: Block
         lateinit var draugConstructor: Block

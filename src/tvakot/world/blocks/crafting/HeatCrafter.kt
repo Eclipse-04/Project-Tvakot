@@ -1,10 +1,9 @@
 package tvakot.world.blocks.crafting
 
 import arc.Core
+import arc.graphics.Color
 import arc.math.Mathf
 import arc.struct.EnumSet
-import arc.util.io.Reads
-import arc.util.io.Writes
 import mindustry.content.Fx
 import mindustry.entities.Effect
 import mindustry.type.ItemStack
@@ -26,6 +25,7 @@ open class HeatCrafter(name: String) : TvaHeatBlock(name){
     var outputLiquid: LiquidStack? = null
     var craftEffect: Effect = Fx.pulverizeSmall
     var drawerCustom: DrawHeatBlock = DrawHeatBlock()
+    var eColor = Color.white
     init {
         super.init()
         flags = EnumSet.of(BlockFlag.factory)
@@ -109,7 +109,7 @@ open class HeatCrafter(name: String) : TvaHeatBlock(name){
                 removeHeat(customConsume.heat, delta())
                 warmup = Mathf.approachDelta(warmup, 1f, warmupSpeed)
                 if (Mathf.chanceDelta(updateEffectChance)) {
-                    updateEffect.at(x + Mathf.range(updateEffectRange), y + Mathf.range(updateEffectRange))
+                    updateEffect.at(x + Mathf.range(updateEffectRange), y + Mathf.range(updateEffectRange), eColor)
                 }
             } else {
                 warmup = Mathf.approachDelta(warmup, 0f, warmupSpeed)
@@ -136,17 +136,6 @@ open class HeatCrafter(name: String) : TvaHeatBlock(name){
 
         override fun status(): BlockStatus {
             return if(heatModule.heat < minHeatRequire) BlockStatus.noInput else cons.status()
-        }
-        override fun write(write: Writes) {
-            super.write(write)
-            write.f(progress)
-            write.f(warmup)
-        }
-
-        override fun read(read: Reads, revision: Byte) {
-            super.read(read, revision)
-            progress = read.f()
-            warmup = read.f()
         }
     }
 }

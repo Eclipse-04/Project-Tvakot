@@ -20,6 +20,7 @@ class TvaItems : ContentList{
         xeopnax = object : Item("xeopnax"){
             init {
                 color = Color.valueOf("676486")
+                radioactivity = 0.8f
             }
         }
         denseIngot = object : Item("dense-ingot"){

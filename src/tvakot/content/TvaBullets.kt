@@ -5,6 +5,7 @@ import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Fill
 import arc.graphics.g2d.Lines
 import arc.math.Interp
+import mindustry.content.Bullets
 import mindustry.content.Fx
 import mindustry.content.StatusEffects
 import mindustry.ctype.ContentList
@@ -21,6 +22,46 @@ import tvakot.entities.bullet.VectorHomingBulletType
 
 class TvaBullets : ContentList {
     override fun load() {
+        standardrailBullet = BasicBulletType(5.5f, 16f).apply {
+            width = 7f
+            height = 12.5f
+            lifetime = 60f
+            shootEffect = Fx.shootSmall
+            smokeEffect = Fx.shootSmallSmoke
+            ammoMultiplier = 1f
+            ammoMultiplier = 2f
+            trailEffect = Fx.smoke
+            trailChance = 0.15f
+            backColor = Color.white
+            frontColor = backColor
+        }
+        denserailBullet = BasicBulletType(6.2f, 22f).apply {
+            pierceCap = 2
+            reloadMultiplier = 0.7f
+            pierceBuilding = true
+            width = 9f
+            height = 12.5f
+            lifetime = 60f
+            ammoMultiplier = 4f
+            trailEffect = Fx.smoke
+            trailChance = 0.15f
+            backColor = Color.white
+            frontColor = backColor
+        }
+        flakrailBullet = BasicBulletType(6.8f, 13f).apply {
+            reloadMultiplier = 0.85f
+            width = 8f
+            height = 11f
+            lifetime = 60f
+            ammoMultiplier = 4f
+            fragBullets = 3
+            fragBullet = Bullets.fragGlassFrag
+            fragCone = 20f
+            trailEffect = Fx.smoke
+            trailChance = 0.15f
+            backColor = Color.white
+            frontColor = backColor
+        }
         LaserTowerBulletType = BasicBulletType().apply {
             lifetime = 10f
             speed = 0f
@@ -135,7 +176,7 @@ class TvaBullets : ContentList {
             trailLength = 4
             trailColor = Pal.bulletYellowBack
         }
-        lightningRicochet = RicochetBulletType(5, 5).apply{
+        lightningRicochet = RicochetBulletType(7, 7).apply{
             width = 9f
             height = 22f
             speed = 5.8f
@@ -153,7 +194,7 @@ class TvaBullets : ContentList {
             backColor = Pal.lancerLaser
             trailColor = backColor
         }
-        surgeLightningRicochet = RicochetBulletType(5, 5).apply{
+        surgeLightningRicochet = RicochetBulletType(4, 4).apply{
             width = 9f
             height = 22f
             speed = 5.8f
@@ -181,7 +222,8 @@ class TvaBullets : ContentList {
                 super.draw(b)
                 val lerp = b.time / b.lifetime
                 val interp = Interp.exp10Out
-                Lines.stroke(lerp * 2, backColor)
+                Lines.stroke(lerp, backColor)
+                Draw.alpha(interp.apply(lerp))
                 for (i in 0 until 3){
                     Lines.swirl(
                         b.x, b.y,
@@ -220,6 +262,11 @@ class TvaBullets : ContentList {
         }
     }
     companion object {
+        //base bullet
+        lateinit var standardrailBullet: BulletType
+        lateinit var denserailBullet: BulletType
+        lateinit var flakrailBullet: BulletType
+        //other
         lateinit var LaserTowerBulletType : BulletType
         lateinit var LaserTowerLargeBulletType : BulletType
         lateinit var shatterBullet : BasicBulletType

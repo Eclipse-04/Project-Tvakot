@@ -1,20 +1,29 @@
 package tvakot.entities.units
 
-import mindustry.Vars.*
-import mindustry.gen.Building
+import arc.util.Log
+import mindustry.Vars
+import mindustry.content.Fx
 import mindustry.gen.UnitEntity
 
 class DroneUnitEntity : UnitEntity() {
     var spawnerBuilding: Int? = null
+    var spawnerUnit: mindustry.gen.Unit? = null
     override fun cap(): Int {
         return count() + 3
     }
-    //totally allowed by MEEP (real)
-    fun getPad(): Building?{
-        return if(spawnerBuilding != null) world.build(spawnerBuilding!!) else null
+    fun getOwner(): Any?{
+        return if(spawnerBuilding != null) {
+            Vars.world.build(spawnerBuilding!!)
+        } else if(spawnerUnit != null && spawnerUnit!!.isValid){
+            spawnerUnit
+        } else null
     }
     override fun update() {
         super.update()
-        if(getPad() == null) destroy()
+        Log.info(getOwner())
+        if(getOwner() == null) {
+            destroy()
+            Fx.unitCapKill.at(this)
+        }
     }
 }

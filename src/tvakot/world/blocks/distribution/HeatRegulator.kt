@@ -2,12 +2,11 @@ package tvakot.world.blocks.distribution
 
 import arc.scene.ui.Label
 import arc.scene.ui.layout.Table
-import arc.util.io.Reads
-import arc.util.io.Writes
 import tvakot.world.blocks.TvaHeatBlock
 
 
 open class HeatRegulator(name: String) : TvaHeatBlock(name) {
+    //TODO fix the shitty configure (i was dumb back then)
     init {
         configurable = true
         saveConfig = true
@@ -33,14 +32,6 @@ open class HeatRegulator(name: String) : TvaHeatBlock(name) {
             return if(source != null){
                 source.heatModule.heat > config()
             } else false
-        }
-        override fun write(write: Writes) {
-            super.write(write)
-            write.f(config())
-        }
-        override fun read(read: Reads, revision: Byte) {
-            super.read(read, revision)
-            minVent = read.f()
         }
     }
 }

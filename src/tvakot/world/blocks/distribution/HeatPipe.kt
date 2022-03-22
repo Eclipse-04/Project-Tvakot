@@ -8,12 +8,15 @@ open class HeatPipe(name: String) : TvaHeatBlock(name) {
     }
     inner class HeatPipeBuild : TvaHeatBlockBuild() {
         override fun appectHeat(source: TvaHeatBlockBuild?): Boolean {
-            return (source is HeatNode.HeatNodeBuild || source is HeatPipeBuild) && source == this.back()
+            return (source is TvaHeatBlockBuild) && (source == this.back() || source == this.front())
         }
         override fun updateTile() {
             super.updateTile()
-            if (front() is HeatPipeBuild || front() is HeatNode.HeatNodeBuild){
+            if (front() is TvaHeatBlockBuild){
                 giveHeat(this, front(), dumpSpeed)
+            }
+            if (back() is TvaHeatBlockBuild){
+                giveHeat(this, back(), dumpSpeed)
             }
         }
     }

@@ -3,8 +3,6 @@ package tvakot.world.blocks
 import arc.Core
 import arc.graphics.Color
 import arc.graphics.g2d.TextureRegion
-import arc.util.io.Reads
-import arc.util.io.Writes
 import mindustry.gen.Building
 import mindustry.graphics.Drawf
 import mindustry.logic.LAccess
@@ -78,15 +76,6 @@ open class TvaHeatBlock(name: String) : Block(name) {
             val rot = if(rotate) rotdeg() else 0f
             Drawf.liquid(heatedRegion, x, y, heatFullness(), heatColor(), rot)
             Drawf.light(this.team, x, y, 40f * heatFullness(), heatColor(), heatFullness() * 0.4f)
-        }
-        override fun write(write: Writes) {
-            super.write(write)
-            write.f(heatModule.heat)
-        }
-
-        override fun read(read: Reads) {
-            super.read(read)
-            heatModule.heat = read.f()
         }
     }
 }

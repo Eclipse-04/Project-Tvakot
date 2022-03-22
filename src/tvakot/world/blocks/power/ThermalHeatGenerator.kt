@@ -7,9 +7,12 @@ import mindustry.content.Fx
 import mindustry.entities.Effect
 import mindustry.game.Team
 import mindustry.graphics.Drawf
+import mindustry.graphics.Pal
+import mindustry.ui.Bar
 import mindustry.world.Tile
 import mindustry.world.meta.Attribute
 import mindustry.world.meta.Stat
+import mindustry.world.meta.StatUnit
 
 
 open class ThermalHeatGenerator(name: String) : HeatGenerator(name){
@@ -19,6 +22,22 @@ open class ThermalHeatGenerator(name: String) : HeatGenerator(name){
     override fun setStats() {
         super.setStats()
         stats.add(Stat.tiles, attribute, floating, (size * size).toFloat(), false)
+    }
+
+    override fun setBars() {
+        super.setBars()
+        if(hasItems) bars.remove("generate")
+        if(hasLiquids) bars.remove("generate-liquid")
+        bars.add("generate") {entity: HeatGeneratorBuild ->
+            Bar(
+                { Core.bundle.format("bar.tvakot-baseHeatGenerate", entity.productionEfficiency *  heatGenerate * 60) },
+                { Pal.powerBar },
+                { entity.productionEfficiency}
+            )
+        }
+    }
+    override fun setHeatStats() {
+        stats.add(Stat.basePowerGeneration, Core.bundle.format("stats.tvakot-heatPerSec", heatGenerate * 60f), StatUnit.seconds)
     }
     override fun drawPlace(x: Int, y: Int, rotation: Int, valid: Boolean) {
         super.drawPlace(x, y, rotation, valid)
