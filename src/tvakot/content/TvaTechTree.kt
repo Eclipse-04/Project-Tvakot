@@ -2,7 +2,6 @@ package tvakot.content
 
 import arc.struct.Seq
 import mindustry.content.Blocks
-import mindustry.content.SectorPresets.*
 import mindustry.content.TechTree
 import mindustry.ctype.ContentList
 import mindustry.ctype.UnlockableContent
@@ -10,7 +9,6 @@ import mindustry.game.Objectives
 import mindustry.type.ItemStack
 
 class TvaTechTree : ContentList {
-    //totally not from acceleration mod what are you talking about
     private fun node(parent: UnlockableContent, child: UnlockableContent, requirements: ItemStack?, objectives: Seq<Objectives.Objective>?) {
         val requirementsIn = if(requirements != null) arrayOf(requirements) else child.researchRequirements()
         val newNode = TechTree.TechNode(TechTree.get(parent) , child, requirementsIn)
@@ -25,10 +23,36 @@ class TvaTechTree : ContentList {
         node(parent, child, requirements, null)
     }
 
+    private fun node(parent: UnlockableContent, child: UnlockableContent) {
+        node(parent, child, null)
+    }
+
     override fun load() {
-        node(Blocks.duo, TvaBlocks.laxo, null, Seq.with(Objectives.SectorComplete(stainedMountains)))
-        node(Blocks.combustionGenerator, TvaBlocks.pulseTowerSmall, null, Seq.with(Objectives.SectorComplete(stainedMountains)))
-        node(TvaBlocks.pulseTowerSmall, TvaBlocks.pulseTower, null, Seq.with(Objectives.SectorComplete(stainedMountains)))
-        node(Blocks.constructor, TvaBlocks.buildingDisassembler, null, Seq.with(Objectives.SectorComplete(ruinousShores)))
+        //sector
+        node(Blocks.coreShard, TvaSectorPresets.surface)
+        node(TvaSectorPresets.surface, TvaSectorPresets.xaopnenOutpost)
+        //turret
+        node(Blocks.duo, TvaBlocks.laxo, null, Seq.with(Objectives.SectorComplete(TvaSectorPresets.surface)))
+        node(TvaBlocks.laxo, TvaBlocks.penetrate, null, Seq.with(Objectives.SectorComplete(TvaSectorPresets.xaopnenOutpost), Objectives.Research(Blocks.salvo)))
+        node(TvaBlocks.laxo, TvaBlocks.ignis, null, Seq.with(Objectives.SectorComplete(TvaSectorPresets.xaopnenOutpost), Objectives.Research(Blocks.lancer)))
+        node(TvaBlocks.laxo, TvaBlocks.novem, null, Seq.with(Objectives.SectorComplete(TvaSectorPresets.xaopnenOutpost), Objectives.Research(Blocks.swarmer)))
+        //distribute drug to kids
+        node(TvaBlocks.boiler, TvaBlocks.heatNode)
+        node(TvaBlocks.heatNode, TvaBlocks.heatVent)
+        //crafter
+        node(Blocks.graphitePress, TvaBlocks.boiler)
+        node(TvaBlocks.boiler, TvaBlocks.heater)
+        node(TvaBlocks.boiler, TvaBlocks.turbine)
+        node(Blocks.graphitePress, TvaBlocks.xaopenForge, null, Seq.with(Objectives.SectorComplete(TvaSectorPresets.xaopnenOutpost)))
+        node(TvaBlocks.xaopenForge, TvaBlocks.xaopenInfuser)
+        //t h e   w a l l
+        node(Blocks.copperWallLarge, TvaBlocks.metaglassWall)
+        node(TvaBlocks.metaglassWall, TvaBlocks.xaopexWall)
+        //le unit
+        node(Blocks.combustionGenerator, TvaBlocks.draugConstructor)
+        node(TvaBlocks.draugConstructor, TvaBlocks.healerConstructor)
+        //effect
+        node(Blocks.combustionGenerator, TvaBlocks.pulseTowerSmall, null, Seq.with(Objectives.SectorComplete(TvaSectorPresets.xaopnenOutpost)))
+        node(TvaBlocks.pulseTowerSmall, TvaBlocks.pulseTower, null, Seq.with(Objectives.SectorComplete(TvaSectorPresets.xaopnenOutpost)))
     }
 }

@@ -21,7 +21,7 @@ import mindustry.world.Block
 import mindustry.world.meta.Stat
 import mindustry.world.meta.StatUnit
 import tvakot.content.TvaBullets
-
+//TODO fix all of these shitty old code
 open class LaserTower(name: String) : Block(name){
     var reloadTime = 0f
     var shootSound = Sounds.spark

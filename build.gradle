@@ -8,7 +8,7 @@ buildscript{
     ext{
         //the build number that this mod is made for
         mindustryVersion = 'v135'
-        kotlinVersion = "1.5.21"
+        kotlinVersion = '1.6.10'
         sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
     }
     dependencies{
@@ -28,6 +28,7 @@ repositories{
 dependencies{
     compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
     compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
 }
 
 compileKotlin{

@@ -3,6 +3,7 @@ package tvakot.content
 import arc.graphics.Color
 import arc.graphics.g2d.Draw
 import arc.graphics.g2d.Fill
+import arc.graphics.g2d.Lines
 import arc.math.Angles
 import arc.math.Interp
 import arc.math.Mathf
@@ -44,10 +45,19 @@ class TvaFx : ContentList {
                 Drawf.tri(e.x, e.y, 7f * e.fout(), 22f, e.rotation + 20f * i)
             }
         }
+        pulseHit = Effect(30f){ e ->
+            Draw.color(Pal.lancerLaser)
+            Lines.stroke(e.fout() * 1.4f)
+            Lines.poly(e.x, e.y, 4, 8f, 0f)
+            for (i in 0..3) {
+                Lines.lineAngle(e.x, e.y, i * 90f + 45f, e.fout() * 2)
+            }
+        }
     }
     companion object {
         lateinit var forgeSmoke: Effect
         lateinit var smelterSmoke: Effect
         lateinit var surgeRicochetShoot: Effect
+        lateinit var pulseHit: Effect
     }
 }

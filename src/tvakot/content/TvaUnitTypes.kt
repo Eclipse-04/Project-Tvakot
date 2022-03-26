@@ -6,15 +6,20 @@ import mindustry.ai.types.MinerAI
 import mindustry.ai.types.RepairAI
 import mindustry.content.Bullets
 import mindustry.content.Fx
+import mindustry.content.Items
 import mindustry.ctype.ContentList
 import mindustry.entities.abilities.ShieldRegenFieldAbility
 import mindustry.entities.bullet.LaserBoltBulletType
 import mindustry.gen.MechUnit
 import mindustry.gen.Sounds
+import mindustry.gen.Unit
 import mindustry.graphics.Pal
 import mindustry.type.UnitType
 import mindustry.type.Weapon
+import mindustry.type.ammo.ItemAmmoType
 import mindustry.type.ammo.PowerAmmoType
+import tvakot.ai.DroneAI
+import tvakot.entities.abilities.DroneSpawnAbility
 import tvakot.entities.bullet.RicochetBulletType
 import tvakot.entities.units.DroneUnitEntity
 
@@ -33,6 +38,7 @@ class TvaUnitTypes : ContentList{
                 x = 4.8f
                 shootSound = Sounds.missile
                 shots = 2
+                shotDelay = 3f
                 ejectEffect = Fx.shootBig
                 inaccuracy = 10f
                 bullet = TvaBullets.standardHomingMissle
@@ -65,18 +71,7 @@ class TvaUnitTypes : ContentList{
                 bullet = Bullets.artilleryDense
             })
 
-            weapons.add(Weapon("tvakot-diarrhea").apply{
-                reload = 180f
-                y = -5f
-                x = 0f
-                shots = 5
-                spacing = 72f
-                shotDelay = 3f
-                rotate = true
-                shootSound = Sounds.missile
-                ejectEffect = Fx.shootBig
-                bullet = TvaBullets.standardHomingMissle
-            })
+            weapons.add(TvaWeapons.diarrhea)
         }
         citadel = UnitType("citadel").apply{
             speed = 0.36f
@@ -121,6 +116,7 @@ class TvaUnitTypes : ContentList{
         //drone
         healDrone = object : UnitType("heal-drone") {
             init {
+                isCounted = false
                 speed = 3.4f
                 defaultController = Prov{ RepairAI() }
                 accel = 0.07f
@@ -152,8 +148,35 @@ class TvaUnitTypes : ContentList{
                 })
             }
         }
+        alphaDrone = object : UnitType("alpha-drone") {
+            init {
+                circleTarget = true
+                isCounted = false
+                speed = 3.4f
+                defaultController = Prov{ DroneAI() }
+                accel = 0.07f
+                drag = 0.1f
+                flying = true
+                rotateSpeed = 11.5f
+                health = 105f
+                engineOffset = 3.75f
+                engineSize = 2.5f
+                faceTarget = true
+                constructor = Prov{ DroneUnitEntity() }
+                ammoType = ItemAmmoType(Items.copper, 10)
+                ammoCapacity = 60
+                isCounted = false
+                weapons.add(Weapon("tvakot-gun").apply {
+                    reload = 15f
+                    x = 0f
+                    mirror = false
+                    bullet = Bullets.standardCopper
+                })
+            }
+        }
         draugMiner = object : UnitType("draug") {
             init {
+                isCounted = false
                 defaultController = Prov{ MinerAI() }
                 speed = 2.85f
                 accel = 0.09f
@@ -171,6 +194,7 @@ class TvaUnitTypes : ContentList{
         }
         transportDrone = object : UnitType("transport-drone") {
             init {
+                isCounted = false
                 speed = 2.85f
                 accel = 0.3f
                 drag = 0.08f
@@ -190,31 +214,36 @@ class TvaUnitTypes : ContentList{
         }
         //endregion
         //core units
-        epsilon = UnitType("epsilon").apply{
-            speed = 0.95f
-            health = 550f
-            canBoost = true
-            hitSize = 8.5f
-            buildSpeed = 1.5f
-            mineTier = 2
-            mineSpeed = 2f
-            boostMultiplier = 1.4f
-            constructor = Prov{ MechUnit.create() }
-            mechSideSway = 0.3f
-            weapons.add(Weapon("tvakot-heavy-ricochet").apply{
-                top = false
-                reload = 10f
-                x = 6.5f
-                inaccuracy = 5f
-                bullet = TvaBullets.standardRicochet.apply {
-                    buildingDamageMultiplier = 0.01f
-                }
-            })
+        epsilon = object : UnitType("epsilon"){
+            init {
+                isCounted = false
+                speed = 0.95f
+                health = 550f
+                canBoost = true
+                hitSize = 8.5f
+                buildSpeed = 1.5f
+                mineTier = 2
+                mineSpeed = 2f
+                boostMultiplier = 1.4f
+                constructor = Prov{ MechUnit.create() }
+                abilities.add(DroneSpawnAbility(alphaDrone, 3, 30f))
+                mechSideSway = 0.3f
+                weapons.add(Weapon("tvakot-heavy-ricochet").apply{
+                    top = false
+                    reload = 10f
+                    x = 6.5f
+                    inaccuracy = 5f
+                    bullet = TvaBullets.standardRicochet.apply {
+                        buildingDamageMultiplier = 0.01f
+                    }
+                })
+            }
         }
         //endregion
     }
     companion object {
         lateinit var healDrone: UnitType
+        lateinit var alphaDrone: UnitType
         lateinit var draugMiner: UnitType
         lateinit var transportDrone: UnitType
         lateinit var castle: UnitType

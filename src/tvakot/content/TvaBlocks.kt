@@ -24,7 +24,6 @@ import tvakot.world.blocks.crafting.HeatCrafter
 import tvakot.world.blocks.defensive.ShatterWall
 import tvakot.world.blocks.defensive.turret.OverdriveTurret
 import tvakot.world.blocks.distribution.HeatNode
-import tvakot.world.blocks.distribution.HeatPipe
 import tvakot.world.blocks.distribution.HeatRegulator
 import tvakot.world.blocks.effect.LaserTower
 import tvakot.world.blocks.power.BurnerHeatGenerator
@@ -95,7 +94,7 @@ class TvaBlocks : ContentList {
             init {
                 requirements(
                     Category.turret,
-                    with(TvaItems.denseIngot, 34, Items.silicon, 35, Items.graphite, 45, Items.plastanium, 32)
+                    with(TvaItems.denseIngot, 34, Items.silicon, 35, Items.graphite, 25, TvaItems.xaopnen, 25, Items.plastanium, 32)
                 )
                 ammo(
                     TvaItems.xaopnenBar, TvaBullets.homingMissleXaonpen,
@@ -175,16 +174,6 @@ class TvaBlocks : ContentList {
             buildCostMultiplier = 0.3f
             heatCapacity = 500f
             heatLoss = 0.0005
-        }
-        heatPipe = object : HeatPipe("heat-pipe"){}.apply {
-            requirements(
-                Category.distribution,
-                with(Items.metaglass, 4, Items.graphite, 4)
-            )
-            health = 80
-            heatCapacity = 600f
-            heatLoss = 0.0005
-            dumpSpeed = 0.4f
         }
         //endregion
         //region Power
@@ -541,7 +530,6 @@ class TvaBlocks : ContentList {
         lateinit var geothermalCollector: Block
         lateinit var thermalTurbine: Block
         lateinit var heatNode: Block
-        lateinit var heatPipe: Block
         lateinit var xaopenInfuser: Block
         lateinit var xaopenForge: Block
         lateinit var smelter: Block

@@ -14,8 +14,15 @@ class TvaSectorPresets : ContentList {
                 difficulty = 2f
             }
         }
+        xaopnenOutpost = object : SectorPreset("xaopnen-outpost", TvaPlanets.alexon, 34) {
+            init {
+                captureWave = 30
+                difficulty = 3f
+            }
+        }
     }
     companion object {
         lateinit var surface: SectorPreset
+        lateinit var xaopnenOutpost: SectorPreset
     }
 }

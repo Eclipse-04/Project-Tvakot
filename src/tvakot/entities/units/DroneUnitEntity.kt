@@ -20,7 +20,6 @@ class DroneUnitEntity : UnitEntity() {
     }
     override fun update() {
         super.update()
-        Log.info(getOwner())
         if(getOwner() == null) {
             destroy()
             Fx.unitCapKill.at(this)

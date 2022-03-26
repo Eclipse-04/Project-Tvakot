@@ -8,6 +8,7 @@ import mindustry.gen.Teamc
 open class TvaBaseBulletType : BasicBulletType() {
     var targetRangeMultiplier = 1f
     var range = 110f
+    var rally = false
     override fun range(): Float {
         return super.range() * targetRangeMultiplier
     }
@@ -23,7 +24,7 @@ open class TvaBaseBulletType : BasicBulletType() {
                 collidesGround && !b.hasCollided(t.id)
             }
         }
-        if(target == null) target = b.owner as Teamc?
+        if(target == null && rally) target = b.owner as Teamc?
         return target
     }
 }

@@ -100,7 +100,7 @@ class TvaBullets : ContentList {
             trailWidth = 4f
             trailLength = 4
             trailColor = backColor
-            hitEffect = Fx.none
+            hitEffect = TvaFx.pulseHit
             despawnEffect = hitEffect
         }
         standardHomingMissle = VectorHomingBulletType().apply {
@@ -167,6 +167,7 @@ class TvaBullets : ContentList {
             width = 9f
             height = 12f
             speed = 3.8f
+            homingRange = 110f
             damage = 18f
             ammoMultiplier = 4f
             lifetime = 90f

@@ -36,13 +36,13 @@ class AlexonPlanetGenerator : SerpuloPlanetGenerator() {
     var waterOffset = 0.08f
     var arr: Array<Array<Block>> =
     arrayOf(
-        arrayOf(Blocks.slag, Blocks.magmarock, Blocks.hotrock, Blocks.stone, Blocks.grass, Blocks.darksand, Blocks.tar, Blocks.basalt, Blocks.stone, Blocks.grass, Blocks.dirt, Blocks.stone, Blocks.grass),
-        arrayOf(Blocks.slag, Blocks.hotrock, Blocks.basalt, Blocks.stone, Blocks.stone, Blocks.darksand, Blocks.tar, Blocks.dacite, Blocks.stone, Blocks.stone, Blocks.grass, Blocks.grass, Blocks.grass),
+        arrayOf(Blocks.slag, Blocks.magmarock, Blocks.hotrock, Blocks.stone, Blocks.grass, Blocks.darksand, Blocks.tar, Blocks.basalt, Blocks.stone, Blocks.grass, Blocks.snow, Blocks.ice, Blocks.ice),
+        arrayOf(Blocks.slag, Blocks.hotrock, Blocks.basalt, Blocks.stone, Blocks.stone, Blocks.darksand, Blocks.tar, Blocks.dacite, Blocks.stone, Blocks.stone, Blocks.grass, Blocks.ice, Blocks.ice),
         arrayOf(Blocks.deepwater, Blocks.water, Blocks.sandWater, Blocks.sand, Blocks.stone, Blocks.sand, Blocks.sand, Blocks.basalt, Blocks.snow, Blocks.snow, Blocks.snow, Blocks.snow, Blocks.ice),
-        arrayOf(Blocks.deepwater, Blocks.water, Blocks.sandWater, Blocks.dacite, Blocks.stone, Blocks.dacite, Blocks.dacite, Blocks.dacite, Blocks.snow, Blocks.snow, Blocks.snow, Blocks.snow, Blocks.ice),
-        arrayOf(Blocks.deepwater, Blocks.water, Blocks.sand, Blocks.sand, Blocks.stone, Blocks.grass, Blocks.grass, Blocks.dacite, Blocks.dacite, Blocks.grass, Blocks.dacite, Blocks.snow, Blocks.ice),
-        arrayOf(Blocks.ice, Blocks.snow, Blocks.dacite, Blocks.stone, Blocks.grass, Blocks.dirt, Blocks.grass, Blocks.water, Blocks.grass, Blocks.stone, Blocks.stone, Blocks.dacite, Blocks.stone, Blocks.dacite),
-        arrayOf(Blocks.deepwater, Blocks.darksandWater, Blocks.basalt, Blocks.basalt, Blocks.stone, Blocks.stone, Blocks.stone, Blocks.water, Blocks.dacite, Blocks.grass, Blocks.dacite, Blocks.grass, Blocks.grass)
+        arrayOf(Blocks.deepwater, Blocks.water, Blocks.sandWater, Blocks.sand, Blocks.stone, Blocks.dacite, Blocks.stone, Blocks.stone, Blocks.snow, Blocks.snow, Blocks.snow, Blocks.ice, Blocks.ice),
+        arrayOf(Blocks.deepwater, Blocks.water, Blocks.sandWater, Blocks.sand, Blocks.stone, Blocks.grass, Blocks.grass, Blocks.dacite, Blocks.stone, Blocks.snow, Blocks.snow, Blocks.iceSnow, Blocks.ice),
+        arrayOf(Blocks.ice, Blocks.snow, Blocks.dacite, Blocks.stone, Blocks.grass, Blocks.dirt, Blocks.grass, Blocks.water, Blocks.grass, Blocks.stone, Blocks.stone, Blocks.dacite, Blocks.ice, Blocks.ice),
+        arrayOf(Blocks.deepwater, Blocks.darksandWater, Blocks.basalt, Blocks.basalt, Blocks.stone, Blocks.stone, Blocks.stone, Blocks.water, Blocks.dacite, Blocks.snow, Blocks.dacite, Blocks.ice, Blocks.ice),
     )
 
     var dec = ObjectMap.of<Block, Block>(
@@ -63,7 +63,7 @@ class AlexonPlanetGenerator : SerpuloPlanetGenerator() {
         var position = position
         position = Tmp.v33.set(position).scl(scl)
         return (Mathf.pow(
-            Simplex.noise3d(seed, 10.0, 0.7, 0.5, position.x.toDouble(), position.y.toDouble(), position.z.toDouble()), 2.3f
+            Simplex.noise3d(seed, 10.0, 0.5, 0.5, position.x.toDouble(), position.y.toDouble(), position.z.toDouble()), 2.3f
         ) + waterOffset) / (1f + waterOffset)
     }
 
