@@ -10,7 +10,7 @@ open class TvaBaseBulletType : BasicBulletType() {
     var range = 110f
     var rally = false
     override fun range(): Float {
-        return super.range() * targetRangeMultiplier
+        return range
     }
     open fun target(b: Bullet): Teamc? {
         var target: Teamc? = if (healPercent > 0) {

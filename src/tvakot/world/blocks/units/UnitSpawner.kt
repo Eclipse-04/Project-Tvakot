@@ -16,6 +16,7 @@ import mindustry.graphics.Drawf
 import mindustry.graphics.Layer
 import mindustry.graphics.Pal
 import mindustry.ui.Bar
+import mindustry.ui.Fonts
 import mindustry.world.Block
 import tvakot.entities.units.DroneUnitEntity
 
@@ -31,6 +32,19 @@ open class UnitSpawner(name: String): Block(name) {
         super.setBars()
         bars.add("progress") { entity: UnitSpawnerBuild ->
             Bar("bar.progress", Pal.accent) { entity.progress / timeConstruct}
+        }
+        bars.add("units") { e: UnitSpawnerBuild ->
+            Bar(
+                {
+                    Core.bundle.format(
+                        "bar.unitcap",
+                        Fonts.getUnicodeStr(constructUnit.name),
+                        e.units.size,
+                        unitAmount
+                    )
+                },
+                { Pal.power }
+            ) { e.units.size / unitAmount.toFloat() }
         }
     }
     init {

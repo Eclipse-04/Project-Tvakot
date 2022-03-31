@@ -25,7 +25,6 @@ import tvakot.world.blocks.defensive.ShatterWall
 import tvakot.world.blocks.defensive.turret.OverdriveTurret
 import tvakot.world.blocks.distribution.HeatNode
 import tvakot.world.blocks.distribution.HeatRegulator
-import tvakot.world.blocks.effect.LaserTower
 import tvakot.world.blocks.power.BurnerHeatGenerator
 import tvakot.world.blocks.power.ThermalHeatGenerator
 import tvakot.world.blocks.power.TurbineGenerator
@@ -252,7 +251,7 @@ class TvaBlocks : ContentList {
             )
             shatterChance = 0.7
             maxShatter = 1
-            health = 3950
+            health = 3250
             size = 2
             shatterInaccuracy = 360f
             shatterBullet = TvaBullets.pulseWallBullet
@@ -431,7 +430,7 @@ class TvaBlocks : ContentList {
         healerConstructor = object : UnitSpawner("healing-station"){}.apply {
             requirements(
                 Category.units,
-                with(Items.titanium, 45, Items.silicon, 65, TvaItems.denseIngot, 45)
+                with(Items.lead, 45, Items.silicon, 25, Items.metaglass, 25)
             )
             consumes.power(2.9f)
             consumes.items(*with(Items.silicon, 30, Items.lead, 15))
@@ -442,6 +441,21 @@ class TvaBlocks : ContentList {
             health = 570
             constructUnit = TvaUnitTypes.healDrone
             unitAmount = 2
+        }
+        defenderPort = object : UnitSpawner("defender-port"){}.apply {
+            requirements(
+                Category.units,
+                with(TvaItems.denseIngot, 30, Items.titanium, 35, Items.graphite, 20, Items.silicon, 20)
+            )
+            consumes.power(1.2f)
+            consumes.items(*with(Items.silicon, 20, Items.titanium, 25))
+            itemCapacity = 50
+            size = 2
+            health = 570
+            unitAmount = 2
+            timeConstruct = 900f
+            constructUnit = TvaUnitTypes.defender
+            range = 0f
         }
         buildingDisassembler = object : PayloadDeconstructor("building-dis"){}.apply{
             requirements(
@@ -469,41 +483,6 @@ class TvaBlocks : ContentList {
                 unitCapModifier = 12
                 unitType = TvaUnitTypes.epsilon
             }
-
-            override fun isHidden(): Boolean {
-                return false
-            }
-        }
-        pulseTowerSmall = object : LaserTower("small-pulse-tower"){}.apply {
-            requirements(
-                Category.effect,
-                with(Items.copper, 25, Items.silicon, 15, Items.graphite, 95)
-            )
-            consumes.power(2.5f)
-            health = 650
-            reloadTime = 25f
-            damageHit = 12f
-            range = 110f
-            sectors = 2
-            fulPerSector = 0.7f
-            orbRadius = 0.8f
-            sectorOffset = 1.6f
-            rotDrawSpeed = 10f
-            sectorStroke = 0.7f
-        }
-        pulseTower = object : LaserTower("pulse-tower"){}.apply {
-            requirements(
-                Category.effect,
-                with(Items.titanium, 45, Items.silicon, 65, TvaItems.xaopnenBar, 45, Items.thorium, 25)
-            )
-            consumes.power(7f)
-            size = 2
-            health = 2850
-            reloadTime = 10f
-            damageHit = 45f
-            range = 180f
-            sectorOffset = 3f
-            laserBullet = TvaBullets.LaserTowerLargeBulletType
         }
         //endregion
     }
@@ -512,8 +491,6 @@ class TvaBlocks : ContentList {
         lateinit var oreXaopnen: Block
         //building
         lateinit var rtgCell: Block
-        lateinit var pulseTower: Block
-        lateinit var pulseTowerSmall: Block
         lateinit var metaglassWall: Block
         lateinit var xaopexWall: Block
         lateinit var laxo: Block
@@ -537,6 +514,7 @@ class TvaBlocks : ContentList {
         lateinit var heatVent: Block
         lateinit var healerConstructor: Block
         lateinit var draugConstructor: Block
+        lateinit var defenderPort: Block
         lateinit var coreFragment: Block
     }
 }

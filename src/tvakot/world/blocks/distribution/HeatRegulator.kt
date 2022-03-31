@@ -5,8 +5,6 @@ import arc.scene.ui.layout.Table
 import arc.util.io.Reads
 import arc.util.io.Writes
 import mindustry.gen.Building
-import mindustry.type.Item
-import mindustry.world.blocks.distribution.Sorter.SorterBuild
 import tvakot.world.blocks.TvaHeatBlock
 
 
@@ -37,7 +35,7 @@ open class HeatRegulator(name: String) : TvaHeatBlock(name) {
         }
         override fun appectHeat(source: TvaHeatBlockBuild?): Boolean {
             return if(source != null){
-                source.heatModule.heat > config()
+                source.heatModule.heat > minVent
             } else false
         }
         override fun onConfigureTileTapped(other: Building): Boolean {

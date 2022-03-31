@@ -51,8 +51,6 @@ class TvaTechTree : ContentList {
         //le unit
         node(Blocks.combustionGenerator, TvaBlocks.draugConstructor)
         node(TvaBlocks.draugConstructor, TvaBlocks.healerConstructor)
-        //effect
-        node(Blocks.combustionGenerator, TvaBlocks.pulseTowerSmall, null, Seq.with(Objectives.SectorComplete(TvaSectorPresets.xaopnenOutpost)))
-        node(TvaBlocks.pulseTowerSmall, TvaBlocks.pulseTower, null, Seq.with(Objectives.SectorComplete(TvaSectorPresets.xaopnenOutpost)))
+        node(TvaBlocks.draugConstructor, TvaBlocks.defenderPort)
     }
 }

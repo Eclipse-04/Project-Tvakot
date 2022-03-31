@@ -62,19 +62,6 @@ class TvaBullets : ContentList {
             backColor = Color.white
             frontColor = backColor
         }
-        LaserTowerBulletType = BasicBulletType().apply {
-            lifetime = 10f
-            speed = 0f
-            damage = 0f
-            hitEffect = Fx.hitLancer
-        }
-        LaserTowerLargeBulletType = BasicBulletType().apply {
-            lifetime = 10f
-            speed = 0f
-            damage = 0f
-            hitEffect = Fx.hitLancer
-            status = TvaStatusEffects.pulseShock
-        }
         shatterBullet = BasicBulletType().apply {
             damage = 9f
             lifetime = 15f
@@ -90,8 +77,10 @@ class TvaBullets : ContentList {
             recoil = 0.4f
             shrinkY = 0f
             lifetime = 140f
+            maxSpeed = 5.2f
             homingRange = 320f
             homingMultiplier = 0.23f
+            drag = 0.01f
             backColor = Pal.lancerLaser
             frontColor = Color.white
             width = 8f
@@ -116,7 +105,6 @@ class TvaBullets : ContentList {
             width = 8f
             height = 8f
             sprite = "missile"
-            targetRangeMultiplier = 0.5f
             trailChance = 0.05f
             trailEffect = Fx.smoke
             backColor = Pal.bulletYellowBack
@@ -129,7 +117,7 @@ class TvaBullets : ContentList {
             speed = 3.2f
             shrinkY = 0f
             homingRange = 220f
-            homingMultiplier = 0.35f
+            homingMultiplier = 0.4f
             splashDamageRadius = 25f
             splashDamage = 12f
             lifetime = 180f
@@ -166,11 +154,11 @@ class TvaBullets : ContentList {
         standardRicochet = RicochetBulletType(3, 3).apply{
             width = 9f
             height = 12f
-            speed = 3.8f
+            speed = 4f
             homingRange = 110f
             damage = 18f
             ammoMultiplier = 4f
-            lifetime = 90f
+            lifetime = 65f
             shootEffect = Fx.shootSmall
             smokeEffect = Fx.shootSmallSmoke
             pierceBuilding = true

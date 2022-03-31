@@ -1,9 +1,7 @@
 package tvakot.content
 
 import arc.func.Prov
-import arc.graphics.Color
 import mindustry.ai.types.MinerAI
-import mindustry.ai.types.RepairAI
 import mindustry.content.Bullets
 import mindustry.content.Fx
 import mindustry.content.Items
@@ -12,15 +10,17 @@ import mindustry.entities.abilities.ShieldRegenFieldAbility
 import mindustry.entities.bullet.LaserBoltBulletType
 import mindustry.gen.MechUnit
 import mindustry.gen.Sounds
-import mindustry.gen.Unit
 import mindustry.graphics.Pal
 import mindustry.type.UnitType
 import mindustry.type.Weapon
 import mindustry.type.ammo.ItemAmmoType
 import mindustry.type.ammo.PowerAmmoType
+import mindustry.type.weapons.RepairBeamWeapon
 import tvakot.ai.DroneAI
+import tvakot.ai.RepairDroneAI
 import tvakot.entities.abilities.DroneSpawnAbility
 import tvakot.entities.bullet.RicochetBulletType
+import tvakot.entities.bullet.VectorHomingBulletType
 import tvakot.entities.units.DroneUnitEntity
 
 
@@ -46,7 +46,7 @@ class TvaUnitTypes : ContentList{
         }
         bastille = UnitType("bastille").apply{
             speed = 0.5f
-            hitSize = 16f
+            hitSize = 14f
             armor = 3f
             health = 550f
             mechSideSway = 0.4f
@@ -113,64 +113,161 @@ class TvaUnitTypes : ContentList{
             weapons.add(TvaWeapons.smallRapidRocket)
         }
         //endregion
-        //drone
-        healDrone = object : UnitType("heal-drone") {
-            init {
-                isCounted = false
-                speed = 3.4f
-                defaultController = Prov{ RepairAI() }
-                accel = 0.07f
-                drag = 0.1f
-                flying = true
-                rotateSpeed = 8.5f
-                health = 105f
-                engineOffset = 3f
-                engineSize = 2f
-                faceTarget = true
-                constructor = Prov{ DroneUnitEntity() }
-                engineColor = Pal.heal
-                ammoType = PowerAmmoType(1000f)
-                isCounted = false
-                weapons.add(Weapon("drone-healer-cannon").apply {
-                    reload = 20f
-                    x = 0f
-                    mirror = false
-                    shootSound = Sounds.lasershoot
-                    ejectEffect = Fx.none
-                    bullet = LaserBoltBulletType(5.2f, 3f).apply{
-                        lifetime = 18f
-                        shootEffect = Fx.none
-                        healPercent = 5f
-                        collidesTeam = true
-                        backColor = Pal.heal
-                        frontColor = Color.white
-                    }
-                })
-            }
-        }
+        //sub-drone
         alphaDrone = object : UnitType("alpha-drone") {
             init {
                 circleTarget = true
                 isCounted = false
-                speed = 3.4f
+                speed = 3.8f
                 defaultController = Prov{ DroneAI() }
                 accel = 0.07f
                 drag = 0.1f
                 flying = true
-                rotateSpeed = 11.5f
-                health = 105f
+                rotateSpeed = 22.5f
+                health = 55f
                 engineOffset = 3.75f
                 engineSize = 2.5f
                 faceTarget = true
                 constructor = Prov{ DroneUnitEntity() }
                 ammoType = ItemAmmoType(Items.copper, 10)
                 ammoCapacity = 60
-                isCounted = false
                 weapons.add(Weapon("tvakot-gun").apply {
                     reload = 15f
                     x = 0f
                     mirror = false
-                    bullet = Bullets.standardCopper
+                    bullet = Bullets.standardCopper.copy().apply { buildingDamageMultiplier = 0.01f }
+                })
+            }
+        }
+        //drone
+        healSupportDrone = object : UnitType("heal-support-drone") {
+            init {
+                isCounted = false
+                speed = 3.8f
+                defaultController = Prov{ DroneAI() }
+                accel = 0.07f
+                drag = 0.1f
+                flying = true
+                rotateSpeed = 22.5f
+                health = 85f
+                engineOffset = 3.75f
+                engineSize = 2.5f
+                faceTarget = true
+                constructor = Prov{ DroneUnitEntity() }
+                ammoType = PowerAmmoType(1000f)
+                weapons.add(Weapon("tvakot-heal-gun").apply {
+                    reload = 20f
+                    x = 0f
+                    mirror = false
+                    shootSound = Sounds.lasershoot
+                    bullet = LaserBoltBulletType().apply {
+                        damage = 14f
+                        buildingDamageMultiplier = 0.01f
+                        speed = 8f
+                        lifetime = 40f
+                        collidesTeam = true
+                        healPercent = 2.5f
+                        backColor = Pal.heal
+                    }
+                })
+            }
+        }
+        healDrone = object : UnitType("heal-drone") {
+            init {
+                isCounted = false
+                speed = 3.4f
+                defaultController = Prov{ RepairDroneAI().apply { retreat = true; rallyDst = 70f } }
+                accel = 0.07f
+                drag = 0.1f
+                flying = true
+                rotateSpeed = 8.5f
+                hitSize = 9f
+                health = 655f
+                armor = 4.5f
+                engineOffset = 5f
+                engineSize = 2.5f
+                faceTarget = true
+                constructor = Prov{ DroneUnitEntity() }
+                engineColor = Pal.heal
+                ammoType = PowerAmmoType(1000f)
+                isCounted = false
+                weapons.add(RepairBeamWeapon().apply {
+                    targetBuildings = true
+                    mirror = false
+                    repairSpeed = 1.4f
+                    y = 4.5f
+                    x = 0f
+                })
+                weapons.add(Weapon().apply {
+                    mirror = false
+                    canHeal = true
+                    y = 4.5f
+                    x = 0f
+                    shots = 3
+                    shotDelay = 3f
+                    reload = 60f
+                    inaccuracy = 15f
+                    ignoreRotation = true
+                    bullet = VectorHomingBulletType().apply {
+                        damage = 5f
+                        shootSound = Sounds.missile
+                        healPercent = 5f
+                        collidesTeam = true
+                        drag = 0.022f
+                        speed = 3.2f
+                        recoil = 0.2f
+                        shrinkY = 0f
+                        homingRange = 320f
+                        homingMultiplier = 0.23f
+                        lifetime = 140f
+                        width = 6f
+                        height = 8f
+                        trailLength = 8
+                        trailWidth = 3f
+                        sprite = "missile"
+                        range = 110f
+                        trailEffect = Fx.smoke
+                        backColor = Pal.heal
+                        trailColor = backColor
+                        hitEffect = Fx.heal
+                        despawnEffect = hitEffect
+                    }
+                })
+            }
+        }
+        defender = object : UnitType("defender") {
+            init {
+                isCounted = false
+                speed = 2.2f
+                defaultController = Prov{ DroneAI().apply { retreat = true; rallyDst = 70f  } }
+                accel = 0.07f
+                drag = 0.1f
+                flying = true
+                rotateSpeed = 22.5f
+                health = 450f
+                engineOffset = 3.75f
+                engineSize = 2.5f
+                faceTarget = true
+                constructor = Prov{ DroneUnitEntity() }
+                ammoType = ItemAmmoType(Items.graphite, 10)
+                abilities.add(ShieldRegenFieldAbility(20f, 100f, 180f, 60f))
+                ammoCapacity = 60
+                isCounted = false
+                weapons.add(Weapon("tvakot-defender-missle").apply {
+                    reload = 30f
+                    x = 0f
+                    y = -2f
+                    mirror = false
+                    rotate = true
+                    bullet = TvaBullets.standardHomingMissle
+                })
+                weapons.add(Weapon("tvakot-defender-gun").apply {
+                    reload = 18f
+                    x = 3f
+                    y = 2f
+                    mirror = true
+                    rotate = true
+                    bullet = TvaBullets.standardRicochet
                 })
             }
         }
@@ -223,17 +320,17 @@ class TvaUnitTypes : ContentList{
                 hitSize = 8.5f
                 buildSpeed = 1.5f
                 mineTier = 2
-                mineSpeed = 2f
+                mineSpeed = 4.3f
                 boostMultiplier = 1.4f
                 constructor = Prov{ MechUnit.create() }
-                abilities.add(DroneSpawnAbility(alphaDrone, 3, 30f))
+                abilities.add(DroneSpawnAbility(alphaDrone, 3, 30f, 80f))
                 mechSideSway = 0.3f
                 weapons.add(Weapon("tvakot-heavy-ricochet").apply{
                     top = false
                     reload = 10f
                     x = 6.5f
                     inaccuracy = 5f
-                    bullet = TvaBullets.standardRicochet.apply {
+                    bullet = TvaBullets.standardRicochet.copy().apply {
                         buildingDamageMultiplier = 0.01f
                     }
                 })
@@ -242,9 +339,11 @@ class TvaUnitTypes : ContentList{
         //endregion
     }
     companion object {
-        lateinit var healDrone: UnitType
+        lateinit var healSupportDrone: UnitType
         lateinit var alphaDrone: UnitType
+        lateinit var defender: UnitType
         lateinit var draugMiner: UnitType
+        lateinit var healDrone: UnitType
         lateinit var transportDrone: UnitType
         lateinit var castle: UnitType
         lateinit var bastille: UnitType
